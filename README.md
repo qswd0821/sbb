@@ -162,3 +162,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: 질문 수정(t6), 삭제(t7) 테스트
 - 이유: 테스트 클래스의 `@Transactional` 로 각 테스트가 끝나면 롤백 → t6에서 제목을 바꾸거나 t7에서 지워도 다른 테스트에 영향 없음 (테스트 간 독립성)
 - 결과: 테스트 8건 통과 (t7은 다른 테스트 후에도 count=2에서 시작)
+
+### 002-15 리포지터리, answerRepository로 답변 생성·조회 (책 2-05, 14163 20강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-15)
+- 작업: 답변 생성(t8, `answerRepository.save`), 답변 조회(t9, `answer.getQuestion()`)
+- 이유: 책 방식(관계지향적: 자식 리포지터리로 직접 저장)을 먼저 확인 → 다음 커밋에서 OneToMany 방식과 비교
+- 결과: 테스트 10건 통과
