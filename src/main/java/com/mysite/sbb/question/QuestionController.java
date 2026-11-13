@@ -2,6 +2,8 @@ package com.mysite.sbb.question;
 
 import com.mysite.sbb.answer.AnswerForm;
 import com.mysite.sbb.answer.AnswerService;
+import com.mysite.sbb.category.Category;
+import com.mysite.sbb.category.CategoryService;
 import com.mysite.sbb.user.SiteUser;
 import com.mysite.sbb.user.UserService;
 import jakarta.validation.Valid;
@@ -29,14 +31,19 @@ public class QuestionController {
     private final QuestionService questionService;
     private final UserService userService;
     private final AnswerService answerService;
+    private final CategoryService categoryService;
 
     // /question/list?page=0 형태, page 파라미터가 없으면 0 (첫 페이지)
     @GetMapping("/list")
+    // category : 카테고리 id (없으면 전체)
     public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
-                       @RequestParam(value = "kw", defaultValue = "") String kw) {
-        Page<Question> paging = questionService.getList(page, kw);
+                       @RequestParam(value = "kw", defaultValue = "") String kw,
+                       @RequestParam(value = "category", required = false) Integer categoryId) {
+        Category category = categoryId == null ? null : categoryService.getCategory(categoryId);
+        Page<Question> paging = questionService.getList(page, kw, category);
         model.addAttribute("paging", paging); // 템플릿에서 ${paging} 로 사용 (내용 + 페이지 정보)
         model.addAttribute("kw", kw);         // 검색창과 페이지 링크에 검색어 유지
+        model.addAttribute("category", category);
         return "question_list"; // templates/question_list.html
     }
 
@@ -70,8 +77,9 @@ public class QuestionController {
             return "question_form"; // 입력값은 questionForm 에 남아 있어 그대로 다시 표시된다
         }
         SiteUser siteUser = userService.getUser(principal.getName());
-        questionService.create(questionForm.getSubject(), questionForm.getContent(), siteUser);
-        return "redirect:/question/list";
+        Category category = categoryService.getCategory(questionForm.getCategoryId());
+        questionService.create(questionForm.getSubject(), questionForm.getContent(), siteUser, category);
+        return "redirect:/question/list?category=%d".formatted(category.getId());
     }
 
     // 수정 폼 : 기존 값을 폼 객체에 채워서 question_form 재사용
@@ -82,6 +90,7 @@ public class QuestionController {
         checkAuthor(question.getAuthor(), principal, "수정권한이 없습니다.");
         questionForm.setSubject(question.getSubject());
         questionForm.setContent(question.getContent());
+        if (question.getCategory() != null) questionForm.setCategoryId(question.getCategory().getId());
         return "question_form";
     }
 
@@ -94,7 +103,8 @@ public class QuestionController {
         }
         Question question = questionService.getQuestion(id);
         checkAuthor(question.getAuthor(), principal, "수정권한이 없습니다.");
-        questionService.modify(question, questionForm.getSubject(), questionForm.getContent());
+        questionService.modify(question, questionForm.getSubject(), questionForm.getContent(),
+                categoryService.getCategory(questionForm.getCategoryId()));
         return "redirect:/question/detail/%d".formatted(id);
     }
 

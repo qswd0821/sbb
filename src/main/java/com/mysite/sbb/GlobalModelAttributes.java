@@ -1,8 +1,12 @@
 package com.mysite.sbb;
 
+import com.mysite.sbb.category.Category;
+import com.mysite.sbb.category.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
+
+import java.util.List;
 
 /**
  * 모든 컨트롤러의 템플릿에 공통으로 넣을 변수 (14168 19강: @ModelAttribute 메서드를 공통으로 두는 방법).
@@ -14,9 +18,16 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @RequiredArgsConstructor
 public class GlobalModelAttributes {
     private final CommonUtil commonUtil;
+    private final CategoryService categoryService;
 
     @ModelAttribute("commonUtil")
     public CommonUtil commonUtil() {
         return commonUtil;
+    }
+
+    // 내비게이션 바 카테고리 메뉴, 질문 폼의 카테고리 선택에서 사용 (3-14 카테고리)
+    @ModelAttribute("categoryList")
+    public List<Category> categoryList() {
+        return categoryService.getList();
     }
 }

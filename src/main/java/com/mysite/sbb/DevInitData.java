@@ -1,5 +1,7 @@
 package com.mysite.sbb;
 
+import com.mysite.sbb.category.Category;
+import com.mysite.sbb.category.CategoryRepository;
 import com.mysite.sbb.question.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationRunner;
@@ -19,14 +21,17 @@ public class DevInitData {
     private static final int TARGET_COUNT = 300;
 
     private final QuestionService questionService;
+    private final CategoryRepository categoryRepository;
 
     @Bean
     @Order(2)
     public ApplicationRunner devInitDataApplicationRunner() {
         return args -> {
             long count = questionService.count();
+            if (count >= TARGET_COUNT) return;
+            Category qna = categoryRepository.findByName("질문답변").orElseThrow(); // BaseInitData(1)가 먼저 생성
             for (long i = count + 1; i <= TARGET_COUNT; i++) {
-                questionService.create("테스트 데이터입니다:[%03d]".formatted(i), "내용무", null);
+                questionService.create("테스트 데이터입니다:[%03d]".formatted(i), "내용무", null, qna);
             }
         };
     }

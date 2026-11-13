@@ -8,6 +8,12 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!-- 카테고리 메뉴 (3-14) -->
+                <li class="nav-item" th:each="c : ${categoryList}">
+                    <a class="nav-link" th:href="@{/question/list(category=${c.id})}" th:text="${c.name}"></a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <!-- 로그인 전 -->
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" th:href="@{/user/login}">로그인</a>

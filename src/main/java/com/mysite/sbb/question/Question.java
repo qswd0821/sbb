@@ -1,6 +1,7 @@
 package com.mysite.sbb.question;
 
 import com.mysite.sbb.answer.Answer;
+import com.mysite.sbb.category.Category;
 import com.mysite.sbb.comment.Comment;
 import com.mysite.sbb.user.SiteUser;
 import jakarta.persistence.CascadeType;
@@ -40,6 +41,10 @@ public class Question {
     private LocalDateTime createDate;
 
     private LocalDateTime modifyDate; // 수정일시 (수정한 적이 없으면 null)
+
+    // 게시판 분류 (3-14 카테고리), 기존 데이터는 null 허용
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Category category;
 
     // 글쓴이 (여러 질문 → 한 사용자), 기존 데이터는 null 허용
     @ManyToOne(fetch = FetchType.LAZY)

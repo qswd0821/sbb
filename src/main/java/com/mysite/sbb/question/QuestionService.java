@@ -1,6 +1,7 @@
 package com.mysite.sbb.question;
 
 import com.mysite.sbb.DataNotFoundException;
+import com.mysite.sbb.category.Category;
 import com.mysite.sbb.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,10 +18,10 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
 
     // page: 0부터 시작하는 페이지 번호, 한 페이지 10개, 최신 글이 먼저
-    // kw : 검색어 (빈 문자열이면 like '%%' 로 전체)
-    public Page<Question> getList(int page, String kw) {
+    // kw : 검색어 (빈 문자열이면 like '%%' 로 전체), category : null 이면 전체 카테고리
+    public Page<Question> getList(int page, String kw, Category category) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Order.desc("createDate")));
-        return questionRepository.findAllByKeyword(kw, pageable);
+        return questionRepository.findAllByKeyword(kw, category, pageable);
     }
 
     public Question getQuestion(Integer id) {
@@ -32,18 +33,20 @@ public class QuestionService {
         return questionRepository.count();
     }
 
-    public Question create(String subject, String content, SiteUser author) {
+    public Question create(String subject, String content, SiteUser author, Category category) {
         Question q = new Question();
         q.setSubject(subject);
         q.setContent(content);
         q.setCreateDate(LocalDateTime.now());
         q.setAuthor(author);
+        q.setCategory(category);
         return questionRepository.save(q);
     }
 
-    public void modify(Question question, String subject, String content) {
+    public void modify(Question question, String subject, String content, Category category) {
         question.setSubject(subject);
         question.setContent(content);
+        question.setCategory(category);
         question.setModifyDate(LocalDateTime.now());
         questionRepository.save(question);
     }

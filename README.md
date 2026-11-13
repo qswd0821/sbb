@@ -360,3 +360,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `comment` 패키지(`Comment` 엔티티: question 또는 answer에 연결, `CommentForm`, `CommentService`, `CommentController`), `Question/Answer.commentList`(cascade REMOVE), `comments.html` 파라미터 프래그먼트, 상세의 질문·답변 아래 댓글 목록·작성·본인 삭제
 - 이유: 답변까지 달 정도는 아닌 짧은 의견. 질문/답변이 지워지면 댓글도 함께 삭제
 - 결과: 질문 댓글 302 `/question/detail/2`, 답변 댓글 302 `#answer_43`, 빈 댓글은 `댓글 내용은 필수항목입니다.`(flash), 본인 댓글 DELETE 302
+
+### 004-03 추가 기능, 카테고리(질문답변·강좌·자유게시판) (책 3-14)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/004-03)
+- 작업: `category` 패키지(`Category`, `CategoryRepository`, `CategoryService`), `Question.category`, 질문 폼 카테고리 선택(@NotNull), 목록 `?category=` 필터(검색·페이징과 함께 유지), 내비게이션 바 카테고리 메뉴(공통 모델 `categoryList`), 초기 데이터
+- 이유: 게시판을 성격별로 분리. 기존 질문은 `질문답변` 으로 이동(일괄 update)
+- 결과: 메뉴 `질문답변·강좌·자유게시판`, 카테고리 미선택 → `카테고리는 필수항목입니다.`, 강좌로 등록 → `/question/list?category=2` 에 1건, 질문답변 302건
