@@ -1,3 +1,10 @@
+/* 프리텐다드 폰트 (14163 39강 강사 커스터마이징) */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
+body {
+    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
 textarea {
     width: 100%;
 }

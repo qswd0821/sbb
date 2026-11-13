@@ -222,3 +222,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `static/style.css`(textarea 100%, 버튼 여백), 상세 템플릿에 `<link th:href="@{/style.css}">`
 - 이유: CSS·JS·이미지 같은 정적 파일은 `resources/static` 에 두면 URL 루트(`/style.css`)로 그대로 제공
 - 결과: `/style.css` → 200 `text/css`
+
+### 002-25 부트스트랩, 목록·상세 화면 꾸미기 (책 2-14, 14163 39강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-25)
+- 작업: 부트스트랩 5.3.3 적용(목록 테이블, 상세 카드, 답변 폼), 작성일시 `#temporals.format`, 프리텐다드 폰트
+- 책과 차이: 부트스트랩 파일을 내려받아 static에 넣지 않고 **cdnjs** 링크 사용, 폰트는 프리텐다드 (14163 39강 강사 커스터마이징)
+- 결과: 목록 `번호/제목/작성일시(yyyy-MM-dd HH:mm)`, 상세 카드 UI 브라우저 확인
