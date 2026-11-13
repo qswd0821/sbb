@@ -143,3 +143,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `@OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE) List<Answer> answerList`
 - 이유: mappedBy로 관계의 주인이 `Answer.question` 임을 알려 중간 테이블 없이 `answer.question_id` 사용. 질문 삭제 시 답변도 삭제
 - 결과: 개발 DB 재생성 후 `question`, `answer` 테이블만 생성 (중간 테이블 없음). `@OneToMany` 는 DB 컬럼을 만들지 않음
+
+### 002-12 리포지터리, Question/Answer 리포지터리와 테스트 샘플 데이터 (책 2-05, 14163 14·15강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-12)
+- 작업: `QuestionRepository`, `AnswerRepository` (JpaRepository), test 프로파일 전용 `TestInitData`(질문 2, 답변 1), `QuestionRepositoryTest`(findAll, findById)
+- 이유: 책은 테스트 안에서 데이터를 save 하고 `SbbApplicationTests` 하나에 몰아넣음 → 강사 방식으로 샘플 데이터 자동 생성 + 리포지터리별 테스트 클래스 분리
+- 결과: 테스트 3건 통과
