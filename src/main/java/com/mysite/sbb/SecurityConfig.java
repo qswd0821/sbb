@@ -18,8 +18,13 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // 일단 모든 요청 허용 (로그인이 필요한 기능은 3-08에서 @PreAuthorize 로 막는다)
+                // 정적 파일·H2 콘솔은 경로 단위로 항상 허용 (14168 46강)
+                // 정적 파일을 static/resource/ 아래에 모아 두어서 "/resource/**" 하나로 허용할 수 있다
+                // 나머지는 일단 모두 허용 (로그인이 필요한 기능은 @PreAuthorize 로 막는다)
+                // → 나중에 "/**" 를 authenticated() 로 바꿔도 CSS·JS·로그인 화면 꾸밈은 깨지지 않는다
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/favicon.ico", "/resource/**").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/**").permitAll())
                 // H2 콘솔은 스프링 시큐리티의 CSRF 토큰을 모르므로 예외 처리
                 .csrf(csrf -> csrf

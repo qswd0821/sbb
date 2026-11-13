@@ -9,7 +9,7 @@
     <!-- 마크다운 에디터 EasyMDE (3-14). 책이 추천한 simpleMDE 는 관리가 중단되어 그 후속 포크를 사용 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css">
     <!-- sbb CSS -->
-    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/resource/style.css}">
     <!--/* 각 페이지의 title 뒤에 " | SBB" 를 붙인다 (14168 45강). 타임리프 주석이라 응답 HTML 에는 나가지 않는다 */-->
     <title layout:title-pattern="$CONTENT_TITLE | SBB">SBB</title>
 </head>
@@ -23,7 +23,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.js"></script>
 <!-- sbb 공통 JS -->
-<script th:src="@{/global.js}"></script>
+<script th:src="@{/resource/global.js}"></script>
 <!-- 각 페이지의 자바스크립트 -->
 <th:block layout:fragment="script"></th:block>
 </body>
