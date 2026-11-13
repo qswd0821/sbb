@@ -258,3 +258,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `navbar.html`(navbarFragment: SBB 로고, 로그인 링크 자리, 모바일 햄버거 버튼), `layout.html` 에 `th:replace` 로 삽입
 - 이유: 모든 페이지 상단에 공통 메뉴. 레이아웃에 한 번만 넣으면 전 페이지 적용
 - 결과: 목록 페이지에 `<a class="navbar-brand" href="/">SBB</a>` 출력. 레이아웃의 설명 주석은 타임리프 주석으로 바꿔 응답에서 제외
+
+### 003-02 페이징, dev 프로파일에 질문 300개 샘플 데이터 (책 3-02)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/003-02)
+- 작업: `DevInitData`(@Profile dev, @Order 2)로 질문을 300개까지 생성, `BaseInitData` 는 @Order 1, `QuestionService.count()`
+- 책과 차이: 책은 테스트 메서드로 300개를 넣지만 테스트는 메모리 DB(002-05)라 dev 화면에 안 보임 → dev 초기 데이터로 생성
+- 결과: 목록에 질문 300개 (페이징 전이라 한 화면에 전부 출력)

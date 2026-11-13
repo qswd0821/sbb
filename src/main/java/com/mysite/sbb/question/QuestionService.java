@@ -21,6 +21,10 @@ public class QuestionService {
                 .orElseThrow(() -> new DataNotFoundException("question not found"));
     }
 
+    public long count() {
+        return questionRepository.count();
+    }
+
     public Question create(String subject, String content) {
         Question q = new Question();
         q.setSubject(subject);

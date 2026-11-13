@@ -8,6 +8,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.annotation.Order;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ public class BaseInitData {
     private final QuestionRepository questionRepository;
 
     @Bean
+    @Order(1) // DevInitData(2) 보다 먼저 실행
     public ApplicationRunner baseInitDataApplicationRunner() {
         return args -> self.work1();
     }
