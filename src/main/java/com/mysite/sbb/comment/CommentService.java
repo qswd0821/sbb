@@ -7,7 +7,6 @@ import com.mysite.sbb.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -52,7 +51,6 @@ public class CommentService {
         Comment comment = new Comment();
         comment.setContent(content);
         comment.setAuthor(author);
-        comment.setCreateDate(LocalDateTime.now());
         return comment;
     }
 }

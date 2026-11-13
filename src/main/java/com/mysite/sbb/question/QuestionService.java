@@ -11,7 +11,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -52,7 +51,6 @@ public class QuestionService {
         Question q = new Question();
         q.setSubject(subject);
         q.setContent(content);
-        q.setCreateDate(LocalDateTime.now());
         q.setAuthor(author);
         q.setCategory(category);
         return questionRepository.save(q);
@@ -62,7 +60,6 @@ public class QuestionService {
         question.setSubject(subject);
         question.setContent(content);
         question.setCategory(category);
-        question.setModifyDate(LocalDateTime.now());
         questionRepository.save(question);
     }
 

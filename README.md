@@ -440,3 +440,10 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `docs/improvements-vs-slog.md` 추가 — ① 강사 수업에서 가져와 적용한 기술 ② 강사 수업 범위를 넘어 추가한 기술적 개선(보안·JPA·웹·초기 데이터) ③ 강사 코드에는 있지만 아직 적용하지 않은 것, README 링크. 커밋 작성자 이메일을 GitHub noreply 로 변경(전체 이력 재작성 후 강제 push)
 - 이유: 책은 도구가 오래되어 비교가 의미 없이 길어짐 → 강사 코드를 기준선으로 기술적 차이만 정리. 개인 이메일 비공개
 - 결과: 개선 22개 항목(근거·커밋 번호), 미적용 강사 기법 8개, GitHub 모든 커밋 작성자 `...@users.noreply.github.com`
+
+### 005-01 강사 기법, BaseEntity + JPA Auditing
+- [코드 보기](https://github.com/qswd0821/sbb/tree/005-01)
+- 엔티티 5개(Question, Answer, Comment, Category, SiteUser)의 공통 필드 `id`, `createDate`, `modifyDate` 를 `BaseEntity`(@MappedSuperclass)로 이동 (14168)
+- `@EnableJpaAuditing(modifyOnCreate = false)` : 생성일시·수정일시 자동 기록, 생성 시 수정일시는 비워 둠
+- 서비스·초기 데이터의 `setCreateDate(now())`, `setModifyDate(now())` 7곳 제거
+- 테스트 t12(생성·수정 시각), t13(추천만으로는 수정일시 불변) 추가

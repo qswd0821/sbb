@@ -1,19 +1,16 @@
 package com.mysite.sbb.comment;
 
+import com.mysite.sbb.BaseEntity;
 import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.question.Question;
 import com.mysite.sbb.user.SiteUser;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 
 /**
  * 댓글. 질문에 달리면 question, 답변에 달리면 answer 가 채워진다 (둘 중 하나).
@@ -21,15 +18,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-public class Comment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+public class Comment extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String content;
-
-    private LocalDateTime createDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private SiteUser author;

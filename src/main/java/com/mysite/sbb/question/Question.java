@@ -1,5 +1,6 @@
 package com.mysite.sbb.question;
 
+import com.mysite.sbb.BaseEntity;
 import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.category.Category;
 import com.mysite.sbb.comment.Comment;
@@ -8,9 +9,6 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -19,7 +17,6 @@ import org.hibernate.annotations.ColumnDefault;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.ArrayList;
@@ -28,20 +25,12 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+public class Question extends BaseEntity {
     @Column(length = 200)
     private String subject;
 
     @Column(columnDefinition = "TEXT")
     private String content;
-
-    private LocalDateTime createDate;
-
-    private LocalDateTime modifyDate; // 수정일시 (수정한 적이 없으면 null)
 
     // 조회 수 (3-14). 기존 행에도 0 이 채워지도록 DB 기본값 지정
     @ColumnDefault("0")
@@ -77,7 +66,6 @@ public class Question {
         answer.setContent(content);
         answer.setQuestion(this);
         answer.setAuthor(author);
-        answer.setCreateDate(LocalDateTime.now());
         answerList.add(answer);
 
         return answer;

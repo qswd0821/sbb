@@ -2,6 +2,8 @@ package com.mysite.sbb.question;
 
 import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.answer.AnswerRepository;
+import com.mysite.sbb.user.SiteUser;
+import com.mysite.sbb.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,6 +24,9 @@ class QuestionRepositoryTest {
 
     @Autowired
     private AnswerRepository answerRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     @DisplayName("findAll")
@@ -96,7 +100,6 @@ class QuestionRepositoryTest {
         Answer answer = new Answer();
         answer.setContent("네 자동으로 생성됩니다.");
         answer.setQuestion(question);
-        answer.setCreateDate(LocalDateTime.now());
         answerRepository.save(answer);
 
         assertThat(answer.getId()).isNotNull();
@@ -138,5 +141,38 @@ class QuestionRepositoryTest {
 
         assertThat(answerList).hasSize(1);
         assertThat(answerList.get(0).getContent()).isEqualTo("네 자동으로 생성됩니다.");
+    }
+
+    @Test
+    @DisplayName("JPA Auditing : 저장 시 createDate 자동, modifyDate 는 수정할 때만")
+    void t12() {
+        Question question = new Question();
+        question.setSubject("auditing");
+        question.setContent("createDate 를 직접 넣지 않는다");
+        questionRepository.saveAndFlush(question);
+
+        assertThat(question.getCreateDate()).isNotNull();
+        assertThat(question.getModifyDate()).isNull(); // modifyOnCreate = false
+
+        question.setContent("수정");
+        questionRepository.flush(); // 더티체킹 UPDATE → @LastModifiedDate
+
+        assertThat(question.getModifyDate()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("JPA Auditing : 추천(중간 테이블 INSERT)만으로는 modifyDate 가 바뀌지 않는다")
+    void t13() {
+        SiteUser user = new SiteUser();
+        user.setUsername("voter");
+        user.setEmail("voter@test.com");
+        user.setPassword("x");
+        userRepository.save(user);
+
+        Question question = questionRepository.findById(1).get();
+        question.getVoter().add(user);
+        questionRepository.flush();
+
+        assertThat(question.getModifyDate()).isNull();
     }
 }
