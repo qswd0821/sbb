@@ -27,6 +27,8 @@ public class Answer {
 
     private LocalDateTime createDate;
 
+    private LocalDateTime modifyDate; // 수정일시 (수정한 적이 없으면 null)
+
     // LAZY : answer 조회 시 question 은 실제로 쓰는 순간에 조회 (기본값 EAGER 는 항상 JOIN/추가 조회)
     @ManyToOne(fetch = FetchType.LAZY)
     private Question question;

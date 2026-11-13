@@ -306,3 +306,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `Question.author`, `Answer.author`(@ManyToOne LAZY SiteUser), `Principal` 로 작성자 저장, `@PreAuthorize("isAuthenticated()")` + `@EnableMethodSecurity`, 목록 `글쓴이` 칸, 상세 작성자 표시, 비로그인 시 답변 입력창 비활성화
 - 이유: 누가 썼는지 기록. 질문 등록·답변 등록은 로그인 사용자만
 - 결과: 비로그인 `GET /question/create`·`POST /answer/create/1` → 302 `/user/login`, 로그인 후 등록한 질문의 글쓴이 `user1` 표시, 테스트 12건 통과
+
+### 003-10 수정, 질문 수정과 작성자 확인·수정일시 (책 3-09)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/003-10)
+- 작업: `modifyDate`(질문·답변), `GET/POST /question/modify/{id}`, 작성자 확인 `checkAuthor`, `question_form` 재사용(th:action 생략 + CSRF hidden), 상세에 본인만 `수정` 버튼과 `modified at` 표시
+- 책과 차이: 권한 없음 응답을 400 대신 **403 FORBIDDEN** (의미에 맞는 상태 코드)
+- 결과: 본인 질문 수정 폼 200 → 저장 302 → 상세에 수정 내용·`modified at`, 남의 질문 수정 → 403
