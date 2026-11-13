@@ -59,4 +59,26 @@ class QuestionRepositoryTest {
 
         assertThat(questions.get(0).getSubject()).isEqualTo("sbb가 무엇인가요?");
     }
+
+    @Test
+    @DisplayName("수정")
+    void t6() {
+        Question question = questionRepository.findById(1).get();
+        question.setSubject("수정된 제목");
+        questionRepository.save(question);
+
+        assertThat(questionRepository.findBySubject("수정된 제목")).isPresent();
+    }
+
+    @Test
+    @DisplayName("삭제")
+    void t7() {
+        // @Transactional 덕분에 t6의 수정, t7의 삭제는 각 테스트가 끝나면 롤백된다 → 테스트 간 독립성
+        assertThat(questionRepository.count()).isEqualTo(2);
+
+        Question question = questionRepository.findById(1).get();
+        questionRepository.delete(question);
+
+        assertThat(questionRepository.count()).isEqualTo(1);
+    }
 }

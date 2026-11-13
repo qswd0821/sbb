@@ -156,3 +156,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 이유: 메서드 이름 규칙(findBy + 컬럼 + And/Or/Like/Between/In/OrderBy...)만으로 JPA가 SQL을 생성
 - 책과 차이: 단건 조회 리턴을 `Question` 대신 `Optional<Question>` (14163 방식, 결과 없음을 타입으로 표현)
 - 결과: 테스트 6건 통과
+
+### 002-14 리포지터리, 수정·삭제 테스트와 @Transactional 롤백 (책 2-05, 14163 18·19강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-14)
+- 작업: 질문 수정(t6), 삭제(t7) 테스트
+- 이유: 테스트 클래스의 `@Transactional` 로 각 테스트가 끝나면 롤백 → t6에서 제목을 바꾸거나 t7에서 지워도 다른 테스트에 영향 없음 (테스트 간 독립성)
+- 결과: 테스트 8건 통과 (t7은 다른 테스트 후에도 count=2에서 시작)
