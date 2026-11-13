@@ -89,3 +89,16 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `application-test.yaml`(`jdbc:h2:mem:db_test`) 추가, `SbbApplicationTests` 에 `@ActiveProfiles("test")`
 - 이유: 테스트가 개발 DB(`./db_dev`)를 건드리지 않고, 매번 비어 있는 메모리 DB에서 시작하도록 (테스트 간 독립성)
 - 결과: `./gradlew test` 통과(1건), 테스트 로그 `The following 1 profile is active: "test"`
+
+### 002-06 JPA 데이터베이스, JPA 추가 및 SQL 로그 설정 (책 2-03, 14163 6강)
+- 작업
+  - 의존성: `spring-boot-starter-data-jpa`, `spring-boot-starter-data-jpa-test`
+  - `application.yaml`: `ddl-auto: update`, `show-sql`, `format_sql`, `highlight_sql`, `use_sql_comments`, 바인딩 값·트랜잭션 TRACE 로그
+- 이유
+  - JPA(하이버네이트)로 SQL 없이 자바 코드로 DB를 다루기 위함
+  - JPA가 실제로 만드는 SQL과 바인딩 값을 눈으로 확인해야 동작을 이해할 수 있음 (강사 방식)
+  - 책의 `H2Dialect` 지정은 생략: 최신 하이버네이트는 DB 종류를 자동 감지
+- 결과
+  - 서버: `HikariPool-1 - Added connection conn0: url=jdbc:h2:./db_dev`, `Initialized JPA EntityManagerFactory`
+  - `db_dev.mv.db` 파일 자동 생성 → H2 콘솔 `jdbc:h2:./db_dev` 연결 성공 (002-04의 `Database not found` 해결)
+  - 테스트: 통과(1건), `url=jdbc:h2:mem:db_test` 로 메모리 DB 사용 확인
