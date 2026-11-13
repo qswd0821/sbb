@@ -228,3 +228,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: 부트스트랩 5.3.3 적용(목록 테이블, 상세 카드, 답변 폼), 작성일시 `#temporals.format`, 프리텐다드 폰트
 - 책과 차이: 부트스트랩 파일을 내려받아 static에 넣지 않고 **cdnjs** 링크 사용, 폰트는 프리텐다드 (14163 39강 강사 커스터마이징)
 - 결과: 목록 `번호/제목/작성일시(yyyy-MM-dd HH:mm)`, 상세 카드 UI 브라우저 확인
+
+### 002-26 표준 HTML 구조, layout.html 공통 레이아웃과 페이지별 title (책 2-15, 14168 44·45강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-26)
+- 작업: `thymeleaf-layout-dialect`, `layout.html`(doctype/head/CSS/JS 공통), 목록·상세는 `layout:decorate="~{layout}"` + `layout:fragment="content"`, `layout:title-pattern="$CONTENT_TITLE | SBB"`
+- 이유: 모든 페이지에 표준 HTML 구조를 한 번만 작성. 페이지마다 고유 title (14168 45강)
+- 결과: 목록 `<title>질문 목록 | SBB</title>`, 상세 `<title>질문 상세 | SBB</title>`, 부트스트랩 CSS/JS 공통 적용
