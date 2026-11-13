@@ -131,3 +131,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `Answer` 엔티티 (content, createDate, `@ManyToOne Question question`)
 - 이유: 답변 N개 → 질문 1개 관계. `@ManyToOne` 은 FK 컬럼을 만든다 (14163 7강)
 - 결과: `create table answer (... question_id integer ...)` + `alter table answer add constraint FK... foreign key (question_id)`
+
+### 002-10 엔티티, 실험 - mappedBy 없는 @OneToMany는 중간 테이블 생성 (14163 11강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-10)
+- 작업: `Question` 에 `@OneToMany List<Answer> answerList` 를 **mappedBy 없이** 추가 (실험)
+- 이유: 책은 mappedBy를 쓰라고만 함 → 빼면 무슨 일이 생기는지 직접 확인 (14163 11강)
+- 결과: `create table question_answer_list (question_id, answer_list_id)` 중간 테이블 생성. 이미 `answer.question_id` 가 있는데도 관계를 중복 저장하는 쓸데없는 테이블
