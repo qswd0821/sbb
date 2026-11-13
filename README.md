@@ -246,3 +246,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: validation 의존성, `QuestionForm`(@NotEmpty, @Size), `@Valid` + `BindingResult`, `th:object`/`th:field`, `form_errors.html` 프래그먼트(`#fields`, `data-error-field-name`), `global.js`(가장 위 오류 필드 focus)
 - 이유: 빈 제목/내용 저장 방지. 실패 시 예외 대신 폼을 다시 보여주고 입력값 유지 (14168 9·10·13강). 오류 필드로 커서 이동 (14168 15·25강)
 - 결과: 빈 폼 제출 → 200, 오류 2개 표시, 내용 입력값 유지, focus=subject
+
+### 002-29 답변 등록, 폼 검증 적용 (책 2-16)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-29)
+- 작업: `AnswerForm`(@NotEmpty), `AnswerController` 에 `@Valid` + `BindingResult`, 상세 GET에 `AnswerForm`, 상세 템플릿 답변 폼에 `th:object`/`th:field` + 오류 프래그먼트
+- 이유: 빈 답변 저장 방지, 질문 폼과 같은 검증·오류 표시 방식 재사용
+- 결과: 빈 답변 → 200 `내용은 필수항목입니다.`, 정상 답변 → 302
