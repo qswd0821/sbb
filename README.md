@@ -38,6 +38,8 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 | 3-14 비밀번호 **찾기**(임시 비밀번호 메일 발송) | - | ⏸ SMTP 메일 계정 필요 |
 | 3-14 소셜 로그인 | - | ⏸ 구글 등 OAuth 클라이언트 ID/Secret 필요 |
 
+단원별로 **책 그대로 구현한 부분 / 개선한 부분**을 나눈 전체 정리: [docs/book-vs-improvement.md](docs/book-vs-improvement.md)
+
 ### 책과 다르게 적용한 주요 개선 (출처)
 - 빌드·설정: Kotlin DSL, `application.yaml`, dev/test 프로파일, SQL·바인딩 로그 (14163 2·5·6강)
 - JPA: `mappedBy` 실험, `@ManyToOne(fetch = LAZY)`, 컬렉션 초기화, `addAnswer` + `CascadeType.PERSIST` (14163 11~25강)
@@ -424,3 +426,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: README에 구현 현황 표(1장 ~ 3-14), 미구현 2건과 사유, 책과 다르게 적용한 개선 요약, 프로젝트 구조 설명을 yaml·도메인 패키지 기준으로 갱신
 - 이유: 3-14까지 진행 결과와 남은 일을 한눈에 확인
 - 결과: 전체 테스트 12건 통과, 1장 ~ 3-13 완료, 3-14는 9개 중 7개 + 비밀번호 변경 완료(비밀번호 찾기·소셜 로그인 보류)
+
+### 004-10 정리, 책 기준 구현과 개선 구현 비교 문서 (docs/book-vs-improvement.md)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/004-10)
+- 작업: `docs/book-vs-improvement.md` 추가(한눈에 보기 표, 1장·2장·3장·3-14 단원별 "책 그대로 / 개선(이유·출처)", 버전 차이로 인한 필수 수정), README 구현 현황에 링크
+- 이유: 어떤 부분이 책 내용이고 어떤 부분이 강사 수업으로 개선한 내용인지 한 문서에서 구분해 복습
+- 결과: GitHub 저장소 공개 전환, 문서에서 각 개선의 커밋 번호·강의 출처 확인 가능
