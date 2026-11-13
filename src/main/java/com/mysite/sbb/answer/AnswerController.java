@@ -38,8 +38,9 @@ public class AnswerController {
             model.addAttribute("question", question); // 상세 템플릿을 다시 그리려면 질문도 필요
             return "question_detail";
         }
-        answerService.create(question, answerForm.getContent(), siteUser);
-        return "redirect:/question/detail/%d".formatted(id); // POST 처리 후 302 → 새로고침 시 중복 등록 방지
+        Answer answer = answerService.create(question, answerForm.getContent(), siteUser);
+        // #answer_{id} : 페이지 이동 후 방금 등록한 답변 위치로 스크롤 (앵커)
+        return "redirect:/question/detail/%d#answer_%d".formatted(id, answer.getId());
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -61,7 +62,7 @@ public class AnswerController {
         Answer answer = answerService.getAnswer(id);
         checkAuthor(answer.getAuthor(), principal, "수정권한이 없습니다.");
         answerService.modify(answer, answerForm.getContent());
-        return "redirect:/question/detail/%d".formatted(answer.getQuestion().getId());
+        return "redirect:/question/detail/%d#answer_%d".formatted(answer.getQuestion().getId(), answer.getId());
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -81,7 +82,7 @@ public class AnswerController {
         Answer answer = answerService.getAnswer(id);
         SiteUser siteUser = userService.getUser(principal.getName());
         answerService.vote(answer, siteUser);
-        return "redirect:/question/detail/%d".formatted(answer.getQuestion().getId());
+        return "redirect:/question/detail/%d#answer_%d".formatted(answer.getQuestion().getId(), answer.getId());
     }
 
     private void checkAuthor(SiteUser author, Principal principal, String message) {

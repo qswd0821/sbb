@@ -330,3 +330,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `voter`(@ManyToMany `Set<SiteUser>`, `new HashSet<>()`), `QuestionService.vote`, `AnswerService.vote`, `POST /question/vote/{id}`, `POST /answer/vote/{id}`, 상세에 추천 버튼 + 추천 수 배지
 - 책과 차이: 추천은 데이터를 바꾸므로 GET 링크 대신 **POST 폼**(CSRF 보호)
 - 결과: 같은 사용자가 질문을 2번 추천해도 1, 답변 추천 1, GET 요청은 405
+
+### 003-14 앵커, 답변 등록·수정·추천 후 해당 답변 위치로 이동 (책 3-11)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/003-14)
+- 작업: 답변 카드에 `<a th:id="|answer_${answer.id}|">`, 답변 등록·수정·추천 리다이렉트에 `#answer_{id}`
+- 이유: 답변이 많을 때 처리 후 페이지 맨 위로 돌아가지 않고 방금 다룬 답변으로 스크롤
+- 결과: 답변 등록 → 302 `/question/detail/2#answer_7`, 추천 → `#answer_1`
