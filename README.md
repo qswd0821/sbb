@@ -204,3 +204,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `GET /question/detail/{id}`, `question_detail.html`, 목록 제목에 상세 링크(`@{|/question/detail/${question.id}|}`), `DataNotFoundException`(@ResponseStatus 404)
 - 이유: 없는 id 요청 시 500(`No value present`) 대신 404와 `question not found` 로 원인을 분명히 (14163 35강 커스텀 예외)
 - 결과: `/question/detail/2` → 200, `/question/detail/999` → 404 `question not found`
+
+### 002-22 URL 프리픽스, QuestionController에 @RequestMapping("/question") (책 2-11, 14163 36강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-22)
+- 작업: 클래스에 `@RequestMapping("/question")`, 메서드는 `/list`, `/detail/{id}`
+- 이유: 컨트롤러의 공통 URL 접두어를 한 곳에서 관리 (중복 제거, 변경 용이)
+- 결과: `/question/list`, `/question/detail/1` 동일하게 200
