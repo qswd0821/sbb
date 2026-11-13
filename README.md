@@ -71,3 +71,16 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `index()` 에 `@ResponseBody` 추가, 리턴 타입 `String` → `"안녕하세요 sbb에 오신 것을 환영합니다."`
 - 이유: 리턴값을 뷰 이름이 아닌 응답 본문으로 쓰게 하여 500 해결 (14163 4강)
 - 결과: `/sbb` → **200**, `Content-Type: text/plain;charset=UTF-8`, 브라우저에 환영 문구 표시
+
+### 002-04 JPA 데이터베이스, H2 추가 및 dev 프로파일 설정 (책 2-03, 14163 5강)
+- 작업
+  - 의존성: `com.h2database:h2`(runtimeOnly), `spring-boot-h2console`
+  - `application.properties` 삭제 → `application.yaml`(앱 이름, `profiles.active: dev`) + `application-dev.yaml`(`jdbc:h2:./db_dev`)
+- 이유
+  - 책은 홈 폴더(`~/local`)의 DB 하나를 사용 → 강사 방식으로 프로젝트 폴더 DB + 프로파일 분리
+  - yaml은 계층 구조라 설정이 늘어날수록 읽기 쉬움
+  - Boot 4부터 H2 콘솔이 별도 모듈(`spring-boot-h2console`)
+- 결과
+  - 로그: `The following 1 profile is active: "dev"`
+  - `/h2-console` → 200, 콘솔 화면 표시
+  - 콘솔에서 `jdbc:h2:./db_dev` 연결 시 `Database not found` → 아직 앱이 DB에 연결한 적이 없어 파일이 없음 (JPA 추가 후 앱 기동 시 생성 예정, 002-06)
