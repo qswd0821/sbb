@@ -17,3 +17,8 @@
 - 의존성: Spring Web, Lombok, DevTools (나머지는 필요한 단원에서 추가)
 - 이유: 책의 SBB 구현을 시작할 기반, 강사(14163 2강)와 동일한 빌드 구성
 - 결과: `./gradlew build` 성공
+
+### 001-03 프로젝트 세팅, 서버 실행 및 브라우저 접속 확인
+- 작업: JDK 25로 `./gradlew bootRun` 실행, `http://localhost:8080/` 접속
+- 이유: 내장 톰캣이 뜨고 요청을 받는지 확인 (컨트롤러가 없으니 404가 정상)
+- 결과: `Starting SbbApplication using Java 25.0.4.1`, 브라우저에 Whitelabel Error Page(404) 표시

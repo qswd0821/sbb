@@ -37,6 +37,9 @@ out/
 ### VS Code ###
 .vscode/
 
+### Claude Code 로컬 실행 설정 (개인 PC 절대경로 포함) ###
+.claude/
+
 ### H2 데이터베이스 파일 ###
 db_dev*
 
