@@ -84,3 +84,8 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
   - 로그: `The following 1 profile is active: "dev"`
   - `/h2-console` → 200, 콘솔 화면 표시
   - 콘솔에서 `jdbc:h2:./db_dev` 연결 시 `Database not found` → 아직 앱이 DB에 연결한 적이 없어 파일이 없음 (JPA 추가 후 앱 기동 시 생성 예정, 002-06)
+
+### 002-05 JPA 데이터베이스, test 프로파일 분리 (메모리 DB) (14163 5강)
+- 작업: `application-test.yaml`(`jdbc:h2:mem:db_test`) 추가, `SbbApplicationTests` 에 `@ActiveProfiles("test")`
+- 이유: 테스트가 개발 DB(`./db_dev`)를 건드리지 않고, 매번 비어 있는 메모리 DB에서 시작하도록 (테스트 간 독립성)
+- 결과: `./gradlew test` 통과(1건), 테스트 로그 `The following 1 profile is active: "test"`
