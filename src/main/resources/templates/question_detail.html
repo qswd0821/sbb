@@ -40,8 +40,12 @@
                     <button type="submit" class="btn btn-sm btn-outline-secondary">삭제</button>
                 </form>
             </div>
+            <!-- 질문 댓글 (3-14) -->
+            <div th:replace="~{comments :: commentsFragment(${question.commentList}, @{|/comment/create/question/${question.id}|})}"></div>
         </div>
     </div>
+    <!-- 댓글 검증 오류 (redirect 후 1회 표시되는 flash attribute) -->
+    <div class="alert alert-danger" th:if="${commentError}" th:text="${commentError}"></div>
     <!-- 답변의 갯수 표시 + 정렬 선택 (3-14 답변 페이징과 정렬) -->
     <div class="d-flex justify-content-between align-items-center border-bottom my-3 py-2">
         <h5 class="mb-0" th:text="|${answerPaging.totalElements}개의 답변이 있습니다.|"></h5>
@@ -88,6 +92,8 @@
                     </form>
                 </th:block>
             </div>
+            <!-- 답변 댓글 (3-14) -->
+            <div th:replace="~{comments :: commentsFragment(${answer.commentList}, @{|/comment/create/answer/${answer.id}|})}"></div>
         </div>
     </div>
     <!-- 답변 페이징 : 정렬 기준(answerSort) 유지 -->

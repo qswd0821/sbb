@@ -1,0 +1,47 @@
+package com.mysite.sbb.comment;
+
+import com.mysite.sbb.answer.Answer;
+import com.mysite.sbb.question.Question;
+import com.mysite.sbb.user.SiteUser;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+/**
+ * 댓글. 질문에 달리면 question, 답변에 달리면 answer 가 채워진다 (둘 중 하나).
+ */
+@Getter
+@Setter
+@Entity
+public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(columnDefinition = "TEXT")
+    private String content;
+
+    private LocalDateTime createDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SiteUser author;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Question question;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Answer answer;
+
+    // 댓글이 속한 질문의 id (답변 댓글이면 답변의 질문) → 처리 후 돌아갈 상세 페이지
+    public Integer getQuestionId() {
+        return question != null ? question.getId() : answer.getQuestion().getId();
+    }
+}

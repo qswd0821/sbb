@@ -354,3 +354,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `AnswerRepository.findByQuestion(Pageable)`, 추천순 `@Query`(left join voter, group by, count desc), `AnswerService.getList(question, page, sort)`(5개씩), 상세에 `answerPage`·`answerSort` 파라미터, 최신순/추천순 버튼, 답변 페이지 이동
 - 이유: 답변이 많아지면 한 번에 모두 출력하기 부담. 추천 많은 답변을 먼저 보고 싶은 경우 (스택오버플로우 방식)
 - 결과: 답변 7개 → 1페이지 5개(최신순), 2페이지 2개, 추천순은 추천 1개인 답변(1)이 맨 앞
+
+### 004-02 추가 기능, 질문·답변 댓글 (책 3-14)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/004-02)
+- 작업: `comment` 패키지(`Comment` 엔티티: question 또는 answer에 연결, `CommentForm`, `CommentService`, `CommentController`), `Question/Answer.commentList`(cascade REMOVE), `comments.html` 파라미터 프래그먼트, 상세의 질문·답변 아래 댓글 목록·작성·본인 삭제
+- 이유: 답변까지 달 정도는 아닌 짧은 의견. 질문/답변이 지워지면 댓글도 함께 삭제
+- 결과: 질문 댓글 302 `/question/detail/2`, 답변 댓글 302 `#answer_43`, 빈 댓글은 `댓글 내용은 필수항목입니다.`(flash), 본인 댓글 DELETE 302
