@@ -149,3 +149,10 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `QuestionRepository`, `AnswerRepository` (JpaRepository), test 프로파일 전용 `TestInitData`(질문 2, 답변 1), `QuestionRepositoryTest`(findAll, findById)
 - 이유: 책은 테스트 안에서 데이터를 save 하고 `SbbApplicationTests` 하나에 몰아넣음 → 강사 방식으로 샘플 데이터 자동 생성 + 리포지터리별 테스트 클래스 분리
 - 결과: 테스트 3건 통과
+
+### 002-13 리포지터리, 쿼리 메서드 findBySubject/And/Like (책 2-05, 14163 16·17강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-13)
+- 작업: `findBySubject`, `findBySubjectAndContent`, `findBySubjectLike` + 테스트
+- 이유: 메서드 이름 규칙(findBy + 컬럼 + And/Or/Like/Between/In/OrderBy...)만으로 JPA가 SQL을 생성
+- 책과 차이: 단건 조회 리턴을 `Question` 대신 `Optional<Question>` (14163 방식, 결과 없음을 타입으로 표현)
+- 결과: 테스트 6건 통과
