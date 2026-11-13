@@ -119,3 +119,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: 기존 커밋에 번호 태그(001-01 ~ 002-06) 부여, 작업내역 항목마다 GitHub 코드 링크 추가
 - 이유: README 일지에서 해당 시점의 코드를 바로 열어볼 수 있게 (강사 slog 페이지의 강의별 커밋 링크 방식)
 - 결과: 이후 모든 커밋도 같은 번호로 태그
+
+### 002-08 엔티티, Question 엔티티 추가 (책 2-04)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-08)
+- 작업: `Question` 엔티티 (id IDENTITY, subject 200자, content TEXT, createDate)
+- 이유: 질문 데이터를 저장할 테이블을 자바 클래스로 정의 (ORM)
+- 결과: 서버 재시작 시 하이버네이트가 `create table question (...)` 실행 (ddl-auto: update)
