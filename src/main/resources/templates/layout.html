@@ -8,10 +8,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
     <!-- sbb CSS -->
     <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
-    <!-- 각 페이지의 <title> 뒤에 " | SBB" 를 붙인다 (14168 45강) -->
+    <!--/* 각 페이지의 title 뒤에 " | SBB" 를 붙인다 (14168 45강). 타임리프 주석이라 응답 HTML 에는 나가지 않는다 */-->
     <title layout:title-pattern="$CONTENT_TITLE | SBB">SBB</title>
 </head>
 <body>
+<!-- 네비게이션바 (navbar.html 프래그먼트) -->
+<nav th:replace="~{navbar :: navbarFragment}"></nav>
 <!-- 기본 템플릿 안에 삽입될 내용 Start -->
 <th:block layout:fragment="content"></th:block>
 <!-- 기본 템플릿 안에 삽입될 내용 End -->

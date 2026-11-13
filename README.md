@@ -252,3 +252,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `AnswerForm`(@NotEmpty), `AnswerController` 에 `@Valid` + `BindingResult`, 상세 GET에 `AnswerForm`, 상세 템플릿 답변 폼에 `th:object`/`th:field` + 오류 프래그먼트
 - 이유: 빈 답변 저장 방지, 질문 폼과 같은 검증·오류 표시 방식 재사용
 - 결과: 빈 답변 → 200 `내용은 필수항목입니다.`, 정상 답변 → 302
+
+### 003-01 내비게이션 바, navbar 프래그먼트를 레이아웃에 추가 (책 3-01)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/003-01)
+- 작업: `navbar.html`(navbarFragment: SBB 로고, 로그인 링크 자리, 모바일 햄버거 버튼), `layout.html` 에 `th:replace` 로 삽입
+- 이유: 모든 페이지 상단에 공통 메뉴. 레이아웃에 한 번만 넣으면 전 페이지 적용
+- 결과: 목록 페이지에 `<a class="navbar-brand" href="/">SBB</a>` 출력. 레이아웃의 설명 주석은 타임리프 주석으로 바꿔 응답에서 제외
