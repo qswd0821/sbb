@@ -66,6 +66,8 @@ com.mysite.sbb
 
 **강사 수업(slog 14163·14168) 코드 대비 기술적 개선**과 뒤늦게 적용한 강사 기법(005): [docs/improvements-vs-slog.md](docs/improvements-vs-slog.md)
 
+**작업 정리 영상** (8분 40초, 앱 시연 + 설명 슬라이드, 한국어 음성·자막): [video/sbb-작업정리.mp4](video/sbb-작업정리.mp4)
+
 ### 책과 다르게 적용한 주요 개선 (출처)
 - 빌드·설정: Kotlin DSL, `application.yaml`, dev/test 프로파일, SQL·바인딩 로그 (14163 2·5·6강)
 - JPA: `mappedBy` 실험, `@ManyToOne(fetch = LAZY)`, 컬렉션 초기화, `addAnswer` + `CascadeType.PERSIST` (14163 11~25강)
@@ -512,3 +514,9 @@ com.mysite.sbb
 - [코드 보기](https://github.com/qswd0821/sbb/tree/005-08)
 - `docs/improvements-vs-slog.md` 3장 "아직 적용하지 않은 것" → "뒤늦게 적용 (005-01 ~ 005-07)" 표 + 강사 코드보다 보완한 점
 - `docs/book-vs-improvement.md` 에 005 절 추가, README 구현 현황에 005 행 추가
+
+### 005-09 정리, 전체 작업 정리 영상 추가
+- [코드 보기](https://github.com/qswd0821/sbb/tree/005-09)
+- `video/sbb-작업정리.mp4` : 001 ~ 005 전체 흐름을 8분 40초로 정리 (1080p, 한국어 TTS 음성 + 자막)
+- 구성 : 기술 스택·커밋 규칙·로드맵 슬라이드 → 앱 시연 5장면(목록·검색, 회원가입·로그인, 질문 등록, 답변·추천·댓글, 수정·프로필·최근 활동) → 3-14 현황·책 대비 개선 → 005 강사 기법별 코드 → 검증·남은 일
+- README 구현 현황 아래에 영상 링크
