@@ -15,6 +15,17 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 
 인텔리제이에서는 Project Structure → SDK를 `ms-25` 로 지정하면 된다.
 
+## 프로젝트 구조
+| 위치 | 역할 |
+|---|---|
+| `src/main/java/com/mysite/sbb` | 컨트롤러, 폼, DTO, 엔티티, 서비스 등 자바 코드 |
+| `SbbApplication.java` | 시작점. `@SpringBootApplication` → 이 패키지 하위를 스캔하므로 모든 클래스는 `com.mysite.sbb` 아래에 둔다 |
+| `src/main/resources/templates` | 타임리프 템플릿 (HTML + 자바 데이터) |
+| `src/main/resources/static` | CSS, JS, 이미지 등 정적 파일 |
+| `src/main/resources/application.properties` | 환경 설정 (DB 등) |
+| `src/test/java` | 서버 없이 실행하는 JUnit 테스트 |
+| `build.gradle.kts` | 플러그인·의존성·빌드 설정 (책은 Groovy `build.gradle`, 우리는 강사 방식 Kotlin DSL) |
+
 ## 작업내역
 
 ### 001-01 프로젝트 세팅, git 저장소 초기화 및 README 작성
@@ -42,3 +53,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: README에 실행 방법(JDK 25 지정 방법) 정리
 - 이유: 시스템 Java가 8이라 그냥 `gradlew`를 실행하면 실패함, 다시 와도 바로 실행할 수 있도록 기록
 - 결과: 작업환경 세팅(001) 완료 — git, 프로젝트 생성, 빌드, 서버 실행, 첫 응답까지 확인
+
+### 002-01 프로젝트 구조, 디렉터리별 역할 정리 (책 2-01)
+- 작업: README에 `## 프로젝트 구조` 섹션 추가
+- 이유: 2장부터 파일이 늘어나므로 각 파일을 어디에 둘지 기준을 먼저 정리, 특히 컴포넌트 스캔 범위(`com.mysite.sbb` 하위) 확인
+- 책과 차이: `build.gradle` → `build.gradle.kts`(강사 방식), STS → 인텔리제이
+- 결과: 코드 변경 없음, 문서 정리
