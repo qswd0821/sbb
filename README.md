@@ -11,3 +11,9 @@
 - 작업: git init, .gitignore, README 생성
 - 이유: 작업 이력을 커밋과 README 일지로 남기기 위한 기반
 - 결과: 첫 커밋 생성
+
+### 001-02 프로젝트 세팅, 스프링부트 프로젝트 생성
+- 작업: Spring Initializr로 프로젝트 생성 (Boot 4.1.2, Java 25, Gradle Kotlin DSL, `com.mysite.sbb`)
+- 의존성: Spring Web, Lombok, DevTools (나머지는 필요한 단원에서 추가)
+- 이유: 책의 SBB 구현을 시작할 기반, 강사(14163 2강)와 동일한 빌드 구성
+- 결과: `./gradlew build` 성공
