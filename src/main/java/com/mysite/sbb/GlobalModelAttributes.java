@@ -1,0 +1,22 @@
+package com.mysite.sbb;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+/**
+ * 모든 컨트롤러의 템플릿에 공통으로 넣을 변수 (14168 19강: @ModelAttribute 메서드를 공통으로 두는 방법).
+ *
+ * 책은 템플릿에서 ${@commonUtil.markdown(...)} 처럼 빈을 직접 참조하지만,
+ * Thymeleaf 3.1 은 보안상 th:utext 등에서 @빈 참조를 제한하므로 모델 변수로 넘긴다.
+ */
+@ControllerAdvice
+@RequiredArgsConstructor
+public class GlobalModelAttributes {
+    private final CommonUtil commonUtil;
+
+    @ModelAttribute("commonUtil")
+    public CommonUtil commonUtil() {
+        return commonUtil;
+    }
+}

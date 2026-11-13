@@ -336,3 +336,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: 답변 카드에 `<a th:id="|answer_${answer.id}|">`, 답변 등록·수정·추천 리다이렉트에 `#answer_{id}`
 - 이유: 답변이 많을 때 처리 후 페이지 맨 위로 돌아가지 않고 방금 다룬 답변으로 스크롤
 - 결과: 답변 등록 → 302 `/question/detail/2#answer_7`, 추천 → `#answer_1`
+
+### 003-15 마크다운, commonmark로 질문·답변 내용 렌더링 (책 3-12)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/003-15)
+- 작업: `org.commonmark:commonmark:0.24.0`, `CommonUtil.markdown()`, `GlobalModelAttributes`(@ControllerAdvice로 모든 템플릿에 `commonUtil` 제공), 상세 내용 `th:utext="${commonUtil.markdown(...)}"`
+- 책과 차이: ① 입력된 HTML은 escape, `javascript:` 링크 제거(`escapeHtml`, `sanitizeUrls`) → `th:utext` XSS 방지 ② Thymeleaf 3.1은 `th:utext` 에서 `@빈` 참조를 막으므로(500 발생) 모델 변수로 전달 (14168 19강 공통 모델 변수)
+- 결과: `# Title`, `**bold**`, 목록이 HTML로, `<script>` 는 `&lt;script&gt;` 로 표시
