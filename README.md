@@ -125,3 +125,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `Question` 엔티티 (id IDENTITY, subject 200자, content TEXT, createDate)
 - 이유: 질문 데이터를 저장할 테이블을 자바 클래스로 정의 (ORM)
 - 결과: 서버 재시작 시 하이버네이트가 `create table question (...)` 실행 (ddl-auto: update)
+
+### 002-09 엔티티, Answer 엔티티와 @ManyToOne 추가 (책 2-04, 14163 7강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-09)
+- 작업: `Answer` 엔티티 (content, createDate, `@ManyToOne Question question`)
+- 이유: 답변 N개 → 질문 1개 관계. `@ManyToOne` 은 FK 컬럼을 만든다 (14163 7강)
+- 결과: `create table answer (... question_id integer ...)` + `alter table answer add constraint FK... foreign key (question_id)`
