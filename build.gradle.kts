@@ -27,6 +27,8 @@ dependencies {
 	runtimeOnly("com.h2database:h2")
 	implementation("org.springframework.boot:spring-boot-h2console")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+	testImplementation("org.springframework.boot:spring-boot-starter-thymeleaf-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 	testCompileOnly("org.projectlombok:lombok")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")

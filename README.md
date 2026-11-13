@@ -180,3 +180,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `com.mysite.sbb.question`(Question, QuestionRepository, 테스트), `com.mysite.sbb.answer`(Answer, AnswerRepository)
 - 이유: 기능(도메인)별로 파일을 모아 관련 코드를 찾기 쉽게. 모두 `com.mysite.sbb` 하위라 컴포넌트 스캔 범위 안
 - 결과: 테스트 12건 통과
+
+### 002-18 질문 목록, 타임리프로 /question/list 구현 (책 2-07, 14163 28~32강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-18)
+- 작업: 타임리프 의존성, `QuestionController`(GET /question/list → Model에 questionList), `question_list.html`(th:each 테이블), `TestInitData` → `BaseInitData`(dev에서도 샘플 데이터)
+- 이유: 컨트롤러는 데이터만 준비하고 HTML은 템플릿이 생성 (서버 사이드 렌더링). dev DB에도 화면 확인용 데이터 필요
+- 결과: `/question/list` → 200, 샘플 질문 2건 표시

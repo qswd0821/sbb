@@ -8,26 +8,24 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Profile;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 /**
- * test 프로파일에서만 동작하는 샘플 데이터 생성기.
- * 테스트가 항상 같은 데이터(질문 2개, 답변 1개)에서 출발하도록 한다.
+ * 샘플 데이터 생성기 (dev, test 공통). 데이터가 하나라도 있으면 건너뛴다.
+ * 테스트는 메모리 DB라 항상 같은 데이터(질문 2개, 답변 1개)에서 출발하고, dev는 화면 확인용 데이터가 생긴다.
  */
-@Profile("test")
 @Configuration
 @RequiredArgsConstructor
-public class TestInitData {
+public class BaseInitData {
     @Autowired
     @Lazy
-    private TestInitData self; // @Transactional 이 프록시를 거쳐 적용되도록 자기 자신을 프록시로 주입
+    private BaseInitData self; // @Transactional 이 프록시를 거쳐 적용되도록 자기 자신을 프록시로 주입
     private final QuestionRepository questionRepository;
 
     @Bean
-    public ApplicationRunner testInitDataApplicationRunner() {
+    public ApplicationRunner baseInitDataApplicationRunner() {
         return args -> self.work1();
     }
 
