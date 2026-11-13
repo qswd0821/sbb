@@ -22,9 +22,30 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 | `SbbApplication.java` | 시작점. `@SpringBootApplication` → 이 패키지 하위를 스캔하므로 모든 클래스는 `com.mysite.sbb` 아래에 둔다 |
 | `src/main/resources/templates` | 타임리프 템플릿 (HTML + 자바 데이터) |
 | `src/main/resources/static` | CSS, JS, 이미지 등 정적 파일 |
-| `src/main/resources/application.properties` | 환경 설정 (DB 등) |
+| `src/main/resources/application.yaml` (+ `-dev`, `-test`) | 환경 설정. dev는 `./db_dev` 파일 DB, test는 메모리 DB |
 | `src/test/java` | 서버 없이 실행하는 JUnit 테스트 |
 | `build.gradle.kts` | 플러그인·의존성·빌드 설정 (책은 Groovy `build.gradle`, 우리는 강사 방식 Kotlin DSL) |
+
+도메인별 패키지: `question`, `answer`, `comment`, `category`, `user` (+ 공통: `SecurityConfig`, `CommonUtil`, `GlobalModelAttributes`, 초기 데이터)
+
+## 구현 현황 (점프 투 스프링부트 1장 ~ 3-14)
+| 범위 | 커밋 | 상태 |
+|---|---|---|
+| 1장 개발 환경, 첫 컨트롤러 | 001-01 ~ 001-05 | ✅ |
+| 2장 컨트롤러·JPA·엔티티·리포지터리·타임리프·폼 검증 (2-01 ~ 2-16) | 002-01 ~ 002-29 | ✅ |
+| 3장 내비게이션·페이징·시큐리티·글쓴이·수정/삭제·추천·앵커·마크다운·검색 (3-01 ~ 3-13) | 003-01 ~ 003-16 | ✅ |
+| 3-14 답변 페이징·정렬, 댓글, 카테고리, 비밀번호 변경, 프로필, 최근 활동, 조회 수, 마크다운 에디터 | 004-01 ~ 004-08 | ✅ |
+| 3-14 비밀번호 **찾기**(임시 비밀번호 메일 발송) | - | ⏸ SMTP 메일 계정 필요 |
+| 3-14 소셜 로그인 | - | ⏸ 구글 등 OAuth 클라이언트 ID/Secret 필요 |
+
+### 책과 다르게 적용한 주요 개선 (출처)
+- 빌드·설정: Kotlin DSL, `application.yaml`, dev/test 프로파일, SQL·바인딩 로그 (14163 2·5·6강)
+- JPA: `mappedBy` 실험, `@ManyToOne(fetch = LAZY)`, 컬렉션 초기화, `addAnswer` + `CascadeType.PERSIST` (14163 11~25강)
+- 테스트: `BaseInitData` 샘플 데이터 + 리포지터리 테스트 클래스, `@Transactional` 롤백 (14163 14~18강)
+- 폼: `@Valid` + `BindingResult`, `th:object/th:field`, 오류 프래그먼트, 첫 오류 필드 포커스 (14168 9~25강)
+- 화면: cdnjs, 프리텐다드, `layout:title-pattern`, `global.js` (14163 39강, 14168 44·45강)
+- HTTP: 처리 후 302, 삭제는 `DELETE`(`_method`), 추천·로그아웃은 POST + CSRF, 권한 없음은 403 (14168 7·26·28·41강, 14163 37강)
+- 보안: 마크다운 렌더링 시 HTML escape·위험 URL 제거 (XSS 방지)
 
 ## 작업내역
 
@@ -397,3 +418,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: 레이아웃에 EasyMDE 2.18.0 CSS/JS, `global.js` 가 `textarea[data-markdown-editor]` 를 에디터로 변환(`forceSync`), 질문 폼·답변 폼·상세 답변 입력에 적용
 - 책과 차이: 책이 추천한 simpleMDE는 관리가 중단(아이콘 CDN도 끊김) → 후속 포크 **EasyMDE**. cdnjs에 없어 jsdelivr 사용
 - 결과: 질문 등록 화면에 에디터 1개·툴바 버튼 12개, 에디터로 작성한 내용이 저장되어 상세에서 `<h2>`, 목록, 굵게로 렌더링
+
+### 004-09 추가 기능, 완료 및 README 구현 현황 정리 (책 3-14)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/004-09)
+- 작업: README에 구현 현황 표(1장 ~ 3-14), 미구현 2건과 사유, 책과 다르게 적용한 개선 요약, 프로젝트 구조 설명을 yaml·도메인 패키지 기준으로 갱신
+- 이유: 3-14까지 진행 결과와 남은 일을 한눈에 확인
+- 결과: 전체 테스트 12건 통과, 1장 ~ 3-13 완료, 3-14는 9개 중 7개 + 비밀번호 변경 완료(비밀번호 찾기·소셜 로그인 보류)
