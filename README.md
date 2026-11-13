@@ -40,6 +40,8 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 
 단원별로 **책 그대로 구현한 부분 / 개선한 부분**을 나눈 전체 정리: [docs/book-vs-improvement.md](docs/book-vs-improvement.md)
 
+**강사 수업(slog 14163·14168) 코드 대비 기술적 개선**과 아직 적용하지 않은 강사 기법: [docs/improvements-vs-slog.md](docs/improvements-vs-slog.md)
+
 ### 책과 다르게 적용한 주요 개선 (출처)
 - 빌드·설정: Kotlin DSL, `application.yaml`, dev/test 프로파일, SQL·바인딩 로그 (14163 2·5·6강)
 - JPA: `mappedBy` 실험, `@ManyToOne(fetch = LAZY)`, 컬렉션 초기화, `addAnswer` + `CascadeType.PERSIST` (14163 11~25강)
@@ -432,3 +434,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `docs/book-vs-improvement.md` 추가(한눈에 보기 표, 1장·2장·3장·3-14 단원별 "책 그대로 / 개선(이유·출처)", 버전 차이로 인한 필수 수정), README 구현 현황에 링크
 - 이유: 어떤 부분이 책 내용이고 어떤 부분이 강사 수업으로 개선한 내용인지 한 문서에서 구분해 복습
 - 결과: GitHub 저장소 공개 전환, 문서에서 각 개선의 커밋 번호·강의 출처 확인 가능
+
+### 004-11 정리, 강사 수업(slog) 코드 대비 기술적 개선 문서
+- [코드 보기](https://github.com/qswd0821/sbb/tree/004-11)
+- 작업: `docs/improvements-vs-slog.md` 추가 — ① 강사 수업에서 가져와 적용한 기술 ② 강사 수업 범위를 넘어 추가한 기술적 개선(보안·JPA·웹·초기 데이터) ③ 강사 코드에는 있지만 아직 적용하지 않은 것, README 링크. 커밋 작성자 이메일을 GitHub noreply 로 변경(전체 이력 재작성 후 강제 push)
+- 이유: 책은 도구가 오래되어 비교가 의미 없이 길어짐 → 강사 코드를 기준선으로 기술적 차이만 정리. 개인 이메일 비공개
+- 결과: 개선 22개 항목(근거·커밋 번호), 미적용 강사 기법 8개, GitHub 모든 커밋 작성자 `...@users.noreply.github.com`
