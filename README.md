@@ -186,3 +186,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: 타임리프 의존성, `QuestionController`(GET /question/list → Model에 questionList), `question_list.html`(th:each 테이블), `TestInitData` → `BaseInitData`(dev에서도 샘플 데이터)
 - 이유: 컨트롤러는 데이터만 준비하고 HTML은 템플릿이 생성 (서버 사이드 렌더링). dev DB에도 화면 확인용 데이터 필요
 - 결과: `/question/list` → 200, 샘플 질문 2건 표시
+
+### 002-19 루트 URL, / 접속 시 질문 목록으로 리다이렉트 (책 2-08, 14163 33강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-19)
+- 작업: `MainController` 에 `GET /` → `redirect:/question/list`
+- 이유: 사이트 주소만 입력해도 메인 화면(질문 목록)이 보이도록
+- 결과: `/` → 302, `Location: /question/list`
