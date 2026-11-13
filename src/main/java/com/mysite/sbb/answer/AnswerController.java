@@ -41,17 +41,17 @@ public class AnswerController {
             model.addAttribute("answerSort", "latest");
             return "question_detail";
         }
-        Answer answer = answerService.create(question, answerForm.getContent(), siteUser);
+        Answer answer = answerService.create(question, answerForm.content(), siteUser);
         // #answer_{id} : 페이지 이동 후 방금 등록한 답변 위치로 스크롤 (앵커)
         return "redirect:/question/detail/%d#answer_%d".formatted(id, answer.getId());
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
-    public String answerModify(AnswerForm answerForm, @PathVariable("id") Integer id, Principal principal) {
+    public String answerModify(Model model, @PathVariable("id") Integer id, Principal principal) {
         Answer answer = answerService.getAnswer(id);
         checkAuthor(answer.getAuthor(), principal, "수정권한이 없습니다.");
-        answerForm.setContent(answer.getContent());
+        model.addAttribute("answerForm", new AnswerForm(answer.getContent()));
         return "answer_form";
     }
 
@@ -64,7 +64,7 @@ public class AnswerController {
         }
         Answer answer = answerService.getAnswer(id);
         checkAuthor(answer.getAuthor(), principal, "수정권한이 없습니다.");
-        answerService.modify(answer, answerForm.getContent());
+        answerService.modify(answer, answerForm.content());
         return "redirect:/question/detail/%d#answer_%d".formatted(answer.getQuestion().getId(), answer.getId());
     }
 

@@ -80,20 +80,19 @@ public class QuestionController {
             return "question_form"; // 입력값은 questionForm 에 남아 있어 그대로 다시 표시된다
         }
         SiteUser siteUser = userService.getUser(principal.getName());
-        Category category = categoryService.getCategory(questionForm.getCategoryId());
-        questionService.create(questionForm.getSubject(), questionForm.getContent(), siteUser, category);
+        Category category = categoryService.getCategory(questionForm.categoryId());
+        questionService.create(questionForm.subject(), questionForm.content(), siteUser, category);
         return "redirect:/question/list?category=%d".formatted(category.getId());
     }
 
     // 수정 폼 : 기존 값을 폼 객체에 채워서 question_form 재사용
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
-    public String questionModify(QuestionForm questionForm, @PathVariable("id") Integer id, Principal principal) {
+    public String questionModify(Model model, @PathVariable("id") Integer id, Principal principal) {
         Question question = questionService.getQuestion(id);
         checkAuthor(question.getAuthor(), principal, "수정권한이 없습니다.");
-        questionForm.setSubject(question.getSubject());
-        questionForm.setContent(question.getContent());
-        if (question.getCategory() != null) questionForm.setCategoryId(question.getCategory().getId());
+        Integer categoryId = question.getCategory() != null ? question.getCategory().getId() : null;
+        model.addAttribute("questionForm", new QuestionForm(categoryId, question.getSubject(), question.getContent()));
         return "question_form";
     }
 
@@ -106,8 +105,8 @@ public class QuestionController {
         }
         Question question = questionService.getQuestion(id);
         checkAuthor(question.getAuthor(), principal, "수정권한이 없습니다.");
-        questionService.modify(question, questionForm.getSubject(), questionForm.getContent(),
-                categoryService.getCategory(questionForm.getCategoryId()));
+        questionService.modify(question, questionForm.subject(), questionForm.content(),
+                categoryService.getCategory(questionForm.categoryId()));
         return "redirect:/question/detail/%d".formatted(id);
     }
 

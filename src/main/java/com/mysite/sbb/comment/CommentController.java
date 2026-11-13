@@ -36,7 +36,7 @@ public class CommentController {
                                     BindingResult bindingResult, Principal principal, RedirectAttributes ra) {
         Question question = questionService.getQuestion(id);
         if (!rejectIfInvalid(bindingResult, ra)) {
-            commentService.create(question, commentForm.getContent(), currentUser(principal));
+            commentService.create(question, commentForm.content(), currentUser(principal));
         }
         return "redirect:/question/detail/%d".formatted(id);
     }
@@ -47,7 +47,7 @@ public class CommentController {
                                   BindingResult bindingResult, Principal principal, RedirectAttributes ra) {
         Answer answer = answerService.getAnswer(id);
         if (!rejectIfInvalid(bindingResult, ra)) {
-            commentService.create(answer, commentForm.getContent(), currentUser(principal));
+            commentService.create(answer, commentForm.content(), currentUser(principal));
         }
         return "redirect:/question/detail/%d#answer_%d".formatted(answer.getQuestion().getId(), id);
     }

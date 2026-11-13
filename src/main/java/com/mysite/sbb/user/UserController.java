@@ -30,14 +30,14 @@ public class UserController {
             return "signup_form";
         }
 
-        if (!userCreateForm.getPassword1().equals(userCreateForm.getPassword2())) {
+        if (!userCreateForm.password1().equals(userCreateForm.password2())) {
             // 특정 필드 오류로 등록 → form_errors 프래그먼트에 함께 표시, password2 에 focus
             bindingResult.rejectValue("password2", "passwordInCorrect", "2개의 패스워드가 일치하지 않습니다.");
             return "signup_form";
         }
 
         try {
-            userService.create(userCreateForm.getUsername(), userCreateForm.getEmail(), userCreateForm.getPassword1());
+            userService.create(userCreateForm.username(), userCreateForm.email(), userCreateForm.password1());
         } catch (DataIntegrityViolationException e) {
             // username, email 의 unique 제약 위반
             bindingResult.reject("signupFailed", "이미 등록된 사용자ID 또는 이메일입니다.");
@@ -62,15 +62,15 @@ public class UserController {
             return "password_form";
         }
         SiteUser user = userService.getUser(principal.getName());
-        if (!userService.isPasswordMatch(user, passwordChangeForm.getCurrentPassword())) {
+        if (!userService.isPasswordMatch(user, passwordChangeForm.currentPassword())) {
             bindingResult.rejectValue("currentPassword", "passwordInCorrect", "현재 비밀번호가 일치하지 않습니다.");
             return "password_form";
         }
-        if (!passwordChangeForm.getNewPassword1().equals(passwordChangeForm.getNewPassword2())) {
+        if (!passwordChangeForm.newPassword1().equals(passwordChangeForm.newPassword2())) {
             bindingResult.rejectValue("newPassword2", "passwordInCorrect", "2개의 새 비밀번호가 일치하지 않습니다.");
             return "password_form";
         }
-        userService.changePassword(user, passwordChangeForm.getNewPassword1());
+        userService.changePassword(user, passwordChangeForm.newPassword1());
         ra.addFlashAttribute("message", "비밀번호가 변경되었습니다.");
         return "redirect:/user/password";
     }

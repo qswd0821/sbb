@@ -459,3 +459,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 엔티티 5개에서 `@Setter` 제거, `@NoArgsConstructor(access = PROTECTED)` + 필수 값을 받는 생성자 (14168 Post)
 - 변경은 도메인 메서드로만: `question.modify/vote/addComment`, `answer.modify/vote/addComment`, `siteUser.changePassword`
 - 서비스의 수정·추천은 `save()` 대신 `@Transactional` + 더티체킹, 댓글 등록도 답변처럼 부모 컬렉션 + PERSIST cascade
+
+### 005-04 강사 기법, 폼 DTO 를 record 로
+- [코드 보기](https://github.com/qswd0821/sbb/tree/005-04)
+- 폼 5개(QuestionForm, AnswerForm, CommentForm, UserCreateForm, PasswordChangeForm)를 `class + @Getter/@Setter` → `record` (14168 40강)
+- 컨트롤러는 `form.getX()` → `form.x()`, 수정 폼 GET 은 setter 대신 `new QuestionForm(...)` 을 모델에 추가
+- 템플릿(`th:object`, `th:field`)은 변경 없음
