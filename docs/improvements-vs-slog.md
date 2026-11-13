@@ -6,7 +6,7 @@
 - 구성
   1. 강사 수업에서 가져와 그대로 적용한 기술
   2. **강사 수업 범위를 넘어 추가한 기술적 개선** ← 핵심
-  3. 강사 코드에는 있지만 아직 적용하지 않은 것 (다음 개선 후보)
+  3. 강사 코드에 있던 기법을 뒤늦게 적용한 것 (005-01 ~ 005-07) + 적용하면서 강사 코드보다 보완한 점
 
 ---
 
@@ -64,7 +64,7 @@
 |---|---|---|---|---|
 | **Thymeleaf 3.1 의 `@빈` 참조 제한 대응** | `@ModelAttribute` 를 컨트롤러 안에 둠 | `@ControllerAdvice` 로 **모든 컨트롤러**에 `commonUtil`, `categoryList` 제공 | 책 방식 `${@commonUtil.markdown()}` 이 3.1.5 에서 500. 공통 변수는 전역으로 한 번만 | 003-15, 004-03 |
 | **오류 포커스 순서를 화면(DOM)에서 결정** | 메시지에 `01-title-...`, `02-content-...` 처럼 순번·필드명을 넣고 `sorted()` 후 `split('-')` 로 분해, 첫 항목에 포커스 | 메시지는 사람이 읽는 문장 그대로 두고, 오류 필드 집합 중 **폼에서 가장 위에 있는 필드**에 포커스 | 둘 다 "검증 순서가 보장되지 않는" 문제를 푼다. 강사 방식은 메시지에 순번·필드명을 관리해야 하고(필드 추가 시 번호 재조정), 이 방식은 화면 배치가 곧 순서라 추가 관리가 없음 | 002-28 |
-| **검색·페이징 상태를 URL 에** | (검색 없음) | GET 검색 폼 + `@{/question/list(page=, kw=, category=)}` | 숨은 폼 + JS 제출 없이 검색 결과를 공유·새로고침·뒤로가기 가능 | 003-16 |
+| **검색·페이징 상태를 URL 에** | (검색 없음) | GET 검색 폼 + `@{/questions(page=, kw=, category=)}` | 숨은 폼 + JS 제출 없이 검색 결과를 공유·새로고침·뒤로가기 가능 | 003-16 |
 | **파라미터 받는 프래그먼트** | 오류 프래그먼트(파라미터 없음) | `commentsFragment(comments, actionUrl)` 를 질문·답변에서 재사용 | 같은 UI 를 데이터만 바꿔 두 곳에 | 004-02 |
 | **작은 폼의 실패 처리** | 실패 시 폼 템플릿을 다시 렌더링 | 상세 페이지 안의 댓글 폼은 PRG + flash attribute 로 1회성 메시지 | 상세 페이지 전체(질문·답변 페이징)를 다시 그리지 않아도 됨, 새로고침 시 재전송 없음 | 004-02 |
 | **앵커 리다이렉트** | `redirect:/posts/{id}` | `redirect:...#answer_{id}` (등록·수정·추천) | 처리 후 방금 다룬 답변 위치로 스크롤 | 003-14 |
@@ -79,17 +79,22 @@
 
 ---
 
-## 3. 강사 코드에는 있지만 아직 적용하지 않은 것 (다음 개선 후보)
+## 3. 강사 기법 뒤늦게 적용 (005-01 ~ 005-07)
 
-14168 최종 코드와 비교했을 때 이 프로젝트가 **뒤처진** 부분. 책의 엔티티·URL 구조를 유지하느라 미뤘다.
+처음에는 책의 엔티티·URL·패키지 구조를 유지하느라 미뤘던 14168 기법들. 004-11 시점에 "강사 코드보다 뒤처진 부분" 으로 정리했던 8개를 모두 적용했다.
+그대로 옮기지 않고, 강사 코드에서 문제가 될 수 있는 부분은 보완했다 (오른쪽 열).
 
-| 강사(14168) | 이 프로젝트 현재 | 적용 시 효과 |
-|---|---|---|
-| `BaseEntity` (`@MappedSuperclass`) + JPA Auditing `@CreatedDate`, `@LastModifiedDate` | 엔티티마다 `id`, `createDate`, `modifyDate` 를 직접 선언·세팅 | 중복 제거, 생성·수정 시각 자동 기록 |
-| 엔티티 `equals`/`hashCode` (id 기반) | 미정의 | 컬렉션에서 엔티티 비교가 안정적 (14168 37·38강) |
-| `@Setter` 없이 도메인 메서드 (`post.modify()`, `addComment()`, `deleteComment()`) + `@NoArgsConstructor` | `@Setter` 로 서비스에서 필드를 직접 변경 | 변경 지점이 엔티티로 모여 규칙(수정일시 등)을 빠뜨리지 않음 |
-| 폼 DTO `record` | `class` + Lombok | 불변, 코드량 감소 (14168 40강) |
-| REST 스타일 URL `/posts/{id}/comments/{id}/delete`, 수정은 `@PutMapping` | 책 URL `/question/modify/{id}`(POST), `/answer/delete/{id}` | 자원 중심 URL, 메서드로 행위 구분 (14163 37강 표, 14168 26강) |
-| `orphanRemoval = true` | `cascade REMOVE` 만 | 컬렉션에서 빼기만 해도 삭제 |
-| 정적 파일 `static/resource/**` + favicon 허용 | `static/` 바로 아래 | 시큐리티 접근 제어를 걸 때 경로 하나로 허용 (14168 46강) |
-| `domain/<도메인>/<계층>`, `global/<관심사>` 패키지 | `com.mysite.sbb.<도메인>` (책 2-06) | 도메인 + 계층 + 전역 설정 구분 |
+| 강사(14168) | 적용 전 | 적용 후 | 강사 코드보다 보완한 점 | 커밋 |
+|---|---|---|---|---|
+| `BaseEntity`(`@MappedSuperclass`) + JPA Auditing | 엔티티마다 `id`, `createDate`, `modifyDate` 선언, 서비스에서 `now()` 세팅 (7곳) | 5개 엔티티가 `BaseEntity` 상속, 시각 자동 기록 | `@EnableJpaAuditing(modifyOnCreate = false)` : 기본값은 생성 시에도 수정일시를 채워 모든 새 글이 "수정됨" 으로 보인다. 추천(중간 테이블)·조회 수(벌크 update)는 수정일시를 바꾸지 않음을 테스트로 확인 | 005-01 |
+| `equals`/`hashCode` (`getClass()`, `int id` 필드) | 미정의 | `BaseEntity` 에 `final` 로 정의 | ① `Hibernate.getClass()` : LAZY 프록시와 실제 객체를 같은 클래스로 ② `getId()` : 프록시는 필드가 비어 있음 ③ 저장 전(id null)은 자기 자신하고만 같음 (강사의 `int id` 는 모두 0 → HashSet 에 하나만) ④ hashCode 는 클래스 기준 (저장 후 id 가 생겨도 해시 불변) | 005-02 |
+| `orphanRemoval = true` + `post.deleteComment()` | `cascade REMOVE` 만, 삭제는 `repository.delete` | 답변·댓글 컬렉션 `orphanRemoval`, `question.deleteAnswer()`, `comment.removeFromParent()` | 질문/답변 두 부모를 가진 댓글도 부모 컬렉션에서 제거. 컬렉션을 읽는 비용은 삭제(드문 동작)에만, 목록은 기존처럼 페이징 | 005-02 |
+| `@Setter` 없음 + 도메인 메서드 + `@NoArgsConstructor` | `@Setter` 로 서비스가 필드 직접 변경 | 생성자 + `modify()`, `vote()`, `addComment()`, `changePassword()`, 서비스는 `@Transactional` 더티체킹 | 기본 생성자를 `PROTECTED` 로 제한 (JPA 전용). 댓글 생성자는 부모를 하나만 받아 "질문 또는 답변" 규칙을 타입으로 보장 | 005-03 |
+| 폼 DTO `record` (컨트롤러 중첩) | `class` + `@Getter/@Setter` | 폼 5개 `record`, 수정 폼은 생성자로 기존 값 채움 | 등록·수정이 같은 `QuestionForm` 을 공유하므로 별도 파일 유지 | 005-04 |
+| REST URL `/posts/{postId}/comments/{id}/modify` + `@PutMapping` | `/question/modify/{id}`(POST), `/answer/delete/{id}` … | `/questions/{id}`, `/questions/{qid}/answers/{id}/modify`(PUT), `/questions/{qid}/comments/{id}/delete`(DELETE) | URL 의 부모 id 와 실제 소속이 다르면 404 (강사는 `post.findCommentById` 로 컬렉션 전체를 순회, 여기서는 FK 값 비교). 수정 PUT 은 작성자 검사를 검증보다 먼저 (남의 글이면 오류 폼 대신 403) | 005-05 |
+| 정적 파일 `static/resource/**` + 시큐리티 경로 허용 | `static/` 바로 아래 | `/resource/style.css`, `/resource/global.js`, `/favicon.ico`·`/resource/**`·`/h2-console/**` 명시 허용 | — (강사와 동일) | 005-06 |
+| `domain/<그룹>/<엔티티>/<계층>`, `global/<관심사>` | `com.mysite.sbb.<도메인>` + 루트에 설정·유틸 10개 | `domain.question.{question,answer,comment,category}`, `domain.user.user`, `global.{jpa,security,initData,exception,util,web}` | 이동 매핑표 + 스크립트로 package·import 일괄 변경 (`git mv` 로 이력 유지, 38개 모두 rename 으로 인식) | 005-07 |
+
+### 남은 차이 (의도적으로 다르게 둔 것)
+- 오류 메시지 정렬 : 강사는 메시지에 `01-title-` 순번을 넣어 정렬, 이 프로젝트는 폼 DOM 순서로 포커스 (2-3 참고)
+- 삭제 폼 : 강사는 `global.js` 가 폼을 만들고 `new Function` 실행, 이 프로젝트는 `th:method="delete"` 폼 (2-1 참고)

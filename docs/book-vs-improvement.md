@@ -13,10 +13,10 @@
 | 영역 | 책 그대로 | 개선 |
 |---|---|---|
 | 빌드·설정 | Spring Web, Lombok, DevTools, H2, JPA, Thymeleaf, Validation, Security, commonmark | Kotlin DSL, `application.yaml`, dev/test 프로파일, SQL·바인딩 로그 |
-| 엔티티 | Question, Answer, SiteUser, `@ManyToOne`, `@OneToMany(mappedBy, REMOVE)`, `@ManyToMany` voter | 전 연관관계 `LAZY`, 컬렉션 초기화, `addAnswer()` + `PERSIST`, `Optional` 조회 |
+| 엔티티 | Question, Answer, SiteUser, `@ManyToOne`, `@OneToMany(mappedBy, REMOVE)`, `@ManyToMany` voter | 전 연관관계 `LAZY`, 컬렉션 초기화, `addAnswer()` + `PERSIST`, `Optional` 조회, `BaseEntity`+Auditing, equals/hashCode, `orphanRemoval`, Setter 제거·도메인 메서드 (005) |
 | 테스트 | 리포지터리 CRUD 테스트 | 테스트용 메모리 DB, 샘플 데이터 자동 생성, 테스트별 롤백, 테스트 클래스 분리 |
 | 화면 | 부트스트랩, 레이아웃, 내비게이션 바, 페이징, 폼 오류 표시 | cdnjs, 프리텐다드, 페이지별 title, `global.js`, 첫 오류 필드 포커스 |
-| HTTP | 컨트롤러·URL 구조(`/question/...`, `/answer/...`) | 삭제는 `DELETE`, 추천·로그아웃은 POST, 권한 없음은 403, 검색은 JS 없는 GET |
+| HTTP | 컨트롤러 구성 (URL 은 005-05 에서 REST 로 변경) | `/questions/{id}/...` REST URL, 수정은 `PUT`, 삭제는 `DELETE`, 추천·로그아웃은 POST, 권한 없음은 403, 검색은 JS 없는 GET |
 | 보안 | 회원가입, 로그인, `@PreAuthorize`, 작성자 확인 | 로그아웃 POST+CSRF, 마크다운 XSS 방지 |
 | 3-14 | 9개 기능 중 7개 + 비밀번호 변경 | 각 기능 구현 방식은 아래 표 참고 |
 
@@ -118,6 +118,20 @@
 | 조회 수 | 상세 진입 시 +1 | `viewCount + 1` **DB 일괄 update** (동시 조회 시 누락 방지), 증가 후 조회해 1차 캐시 문제 회피 |
 | 소셜 로그인 | ⏸ 보류 | OAuth 클라이언트 ID/Secret 필요 |
 | 마크다운 에디터 | EasyMDE | 책 추천 simpleMDE 는 관리 중단 → 후속 포크, `data-markdown-editor` 속성 하나로 적용 |
+
+## 강사 기법 뒤늦게 적용 (005-01 ~ 005-07)
+
+책 구조를 유지하느라 미뤘던 부분을 강사(14168) 방식으로 바꿨다. 상세 비교는 [improvements-vs-slog.md](improvements-vs-slog.md) 3장.
+
+| 책 | 바뀐 구현 | 커밋 |
+|---|---|---|
+| 엔티티마다 `id`, `createDate`, `modifyDate`, 서비스에서 `LocalDateTime.now()` | `BaseEntity` + JPA Auditing | 005-01 |
+| equals 없음, `answerRepository.delete` | id 기반 equals/hashCode, `orphanRemoval` + 부모 컬렉션에서 제거 | 005-02 |
+| `@Setter` + 서비스에서 `setXxx` | 생성자 + 도메인 메서드, 더티체킹 | 005-03 |
+| 폼 `class` + getter/setter | `record` | 005-04 |
+| `/question/list`, `/question/detail/{id}`, `/answer/modify/{id}`(POST) | `/questions`, `/questions/{id}`, `/questions/{qid}/answers/{id}/modify`(PUT) | 005-05 |
+| `static/style.css` | `static/resource/style.css` | 005-06 |
+| `com.mysite.sbb.question` 등 도메인 패키지 | `domain/question/question/{controller,entity,repository,service}`, `global/...` | 005-07 |
 
 ---
 

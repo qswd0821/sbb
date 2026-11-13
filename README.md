@@ -58,12 +58,13 @@ com.mysite.sbb
 | 2장 컨트롤러·JPA·엔티티·리포지터리·타임리프·폼 검증 (2-01 ~ 2-16) | 002-01 ~ 002-29 | ✅ |
 | 3장 내비게이션·페이징·시큐리티·글쓴이·수정/삭제·추천·앵커·마크다운·검색 (3-01 ~ 3-13) | 003-01 ~ 003-16 | ✅ |
 | 3-14 답변 페이징·정렬, 댓글, 카테고리, 비밀번호 변경, 프로필, 최근 활동, 조회 수, 마크다운 에디터 | 004-01 ~ 004-08 | ✅ |
+| 강사(14168) 기법 적용: BaseEntity·Auditing, equals/hashCode·orphanRemoval, Setter 제거, record 폼, REST URL·PUT, static/resource, domain/global 패키지 | 005-01 ~ 005-07 | ✅ |
 | 3-14 비밀번호 **찾기**(임시 비밀번호 메일 발송) | - | ⏸ SMTP 메일 계정 필요 |
 | 3-14 소셜 로그인 | - | ⏸ 구글 등 OAuth 클라이언트 ID/Secret 필요 |
 
 단원별로 **책 그대로 구현한 부분 / 개선한 부분**을 나눈 전체 정리: [docs/book-vs-improvement.md](docs/book-vs-improvement.md)
 
-**강사 수업(slog 14163·14168) 코드 대비 기술적 개선**과 아직 적용하지 않은 강사 기법: [docs/improvements-vs-slog.md](docs/improvements-vs-slog.md)
+**강사 수업(slog 14163·14168) 코드 대비 기술적 개선**과 뒤늦게 적용한 강사 기법(005): [docs/improvements-vs-slog.md](docs/improvements-vs-slog.md)
 
 ### 책과 다르게 적용한 주요 개선 (출처)
 - 빌드·설정: Kotlin DSL, `application.yaml`, dev/test 프로파일, SQL·바인딩 로그 (14163 2·5·6강)
@@ -73,6 +74,7 @@ com.mysite.sbb
 - 화면: cdnjs, 프리텐다드, `layout:title-pattern`, `global.js` (14163 39강, 14168 44·45강)
 - HTTP: 처리 후 302, 삭제는 `DELETE`(`_method`), 추천·로그아웃은 POST + CSRF, 권한 없음은 403 (14168 7·26·28·41강, 14163 37강)
 - 보안: 마크다운 렌더링 시 HTML escape·위험 URL 제거 (XSS 방지)
+- 엔티티·구조: `BaseEntity` + JPA Auditing, 프록시 안전한 equals/hashCode, `orphanRemoval`, Setter 대신 도메인 메서드, `record` 폼, REST URL + `PUT`, `domain/global` 패키지 (14168, 005-01 ~ 005-07)
 
 ## 작업내역
 
@@ -505,3 +507,8 @@ com.mysite.sbb
 - 자바 파일 38개를 `domain/<그룹>/<엔티티>/<계층>`, `global/<관심사>` 로 이동 (14168 `domain/post/post/controller`, `global/jpa/entity`)
 - 그룹 : `domain.question`(질문·답변·댓글·카테고리·최근활동), `domain.user`, `domain.home` / 공통 : `global.jpa`, `security`, `initData`, `exception`, `util`, `web`
 - 코드 내용 변경 없음 (package·import 만), README 프로젝트 구조 갱신
+
+### 005-08 정리, 강사 기법 적용 결과 문서 반영
+- [코드 보기](https://github.com/qswd0821/sbb/tree/005-08)
+- `docs/improvements-vs-slog.md` 3장 "아직 적용하지 않은 것" → "뒤늦게 적용 (005-01 ~ 005-07)" 표 + 강사 코드보다 보완한 점
+- `docs/book-vs-improvement.md` 에 005 절 추가, README 구현 현황에 005 행 추가
