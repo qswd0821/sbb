@@ -270,3 +270,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `QuestionService.getList(int page)` → `PageRequest.of(page, 10, createDate desc)`, 컨트롤러 `?page=` 파라미터(기본 0), 템플릿 `paging` + 부트스트랩 pagination(이전/다음, 현재 ±5페이지)
 - 이유: 300개를 한 번에 출력하지 않고 10개씩, 최신 글 먼저
 - 결과: 첫 페이지 10건(최신 글부터), `?page=29`(마지막) 10건 + 다음 버튼 disabled
+
+### 003-04 게시물 번호, 전체 개수 기준 역순 번호 (책 3-03)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/003-04)
+- 작업: 번호 = `전체 개수 - (현재 페이지 × 페이지 크기) - 나열 인덱스`
+- 이유: `loop.count` 는 페이지마다 1부터 다시 시작 → 최신 글이 가장 큰 번호를 갖도록
+- 결과: 첫 페이지 300 ~ 291, 마지막(?page=29) 10 ~ 1
