@@ -18,15 +18,38 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 ## 프로젝트 구조
 | 위치 | 역할 |
 |---|---|
-| `src/main/java/com/mysite/sbb` | 컨트롤러, 폼, DTO, 엔티티, 서비스 등 자바 코드 |
+| `src/main/java/com/mysite/sbb` | 자바 코드 (아래 패키지 구조) |
 | `SbbApplication.java` | 시작점. `@SpringBootApplication` → 이 패키지 하위를 스캔하므로 모든 클래스는 `com.mysite.sbb` 아래에 둔다 |
 | `src/main/resources/templates` | 타임리프 템플릿 (HTML + 자바 데이터) |
-| `src/main/resources/static` | CSS, JS, 이미지 등 정적 파일 |
+| `src/main/resources/static/resource` | CSS, JS 등 정적 파일 (주소 `/resource/...`, 시큐리티에서 경로 하나로 허용) |
 | `src/main/resources/application.yaml` (+ `-dev`, `-test`) | 환경 설정. dev는 `./db_dev` 파일 DB, test는 메모리 DB |
 | `src/test/java` | 서버 없이 실행하는 JUnit 테스트 |
 | `build.gradle.kts` | 플러그인·의존성·빌드 설정 (책은 Groovy `build.gradle`, 우리는 강사 방식 Kotlin DSL) |
 
-도메인별 패키지: `question`, `answer`, `comment`, `category`, `user` (+ 공통: `SecurityConfig`, `CommonUtil`, `GlobalModelAttributes`, 초기 데이터)
+패키지 구조 (강사 14168 방식 `domain/<그룹>/<엔티티>/<계층>`, `global/<관심사>`)
+
+```
+com.mysite.sbb
+├── SbbApplication
+├── domain
+│   ├── home/controller                 MainController(/ → /questions), HelloController
+│   ├── question                        질문 게시판 (질문과 그에 속한 답변·댓글·카테고리)
+│   │   ├── question/{controller, entity, repository, service}
+│   │   ├── answer/{controller, entity, repository, service}
+│   │   ├── comment/{controller, entity, repository, service}
+│   │   ├── category/{entity, repository, service}
+│   │   └── recent/controller           최근 활동
+│   └── user/user/{controller, entity, repository, service}   회원, 프로필, 로그인
+└── global
+    ├── jpa/entity                      BaseEntity (id, 생성·수정일시, equals/hashCode)
+    ├── security                        SecurityConfig
+    ├── initData                        BaseInitData, DevInitData
+    ├── exception                       DataNotFoundException
+    ├── util                            CommonUtil (마크다운)
+    └── web                             GlobalModelAttributes (모든 화면 공통 모델 변수)
+```
+
+폼(`record`)은 그 폼을 받는 컨트롤러와 같은 `controller` 패키지에 둔다.
 
 ## 구현 현황 (점프 투 스프링부트 1장 ~ 3-14)
 | 범위 | 커밋 | 상태 |
@@ -476,3 +499,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - [코드 보기](https://github.com/qswd0821/sbb/tree/005-06)
 - `static/style.css`, `static/global.js` → `static/resource/` (주소 `/resource/...`) (14168 46강)
 - 시큐리티 : `/favicon.ico`, `/resource/**`, `/h2-console/**` 를 경로 단위로 명시 허용
+
+### 005-07 강사 기법, domain/global 패키지 구조
+- [코드 보기](https://github.com/qswd0821/sbb/tree/005-07)
+- 자바 파일 38개를 `domain/<그룹>/<엔티티>/<계층>`, `global/<관심사>` 로 이동 (14168 `domain/post/post/controller`, `global/jpa/entity`)
+- 그룹 : `domain.question`(질문·답변·댓글·카테고리·최근활동), `domain.user`, `domain.home` / 공통 : `global.jpa`, `security`, `initData`, `exception`, `util`, `web`
+- 코드 내용 변경 없음 (package·import 만), README 프로젝트 구조 갱신
