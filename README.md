@@ -282,3 +282,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: 제목 옆 `#lists.size(question.answerList)` 빨간 숫자(답변이 있을 때만), 헤더 가운데 정렬·제목 칸 50%
 - 이유: 목록에서 답변이 달린 질문을 한눈에 파악
 - 결과: 마지막 페이지 `스프링부트 모델 질문입니다. 1`, `sbb가 무엇인가요? 3`
+
+### 003-06 스프링 시큐리티, 도입과 모든 요청 허용·CSRF 확인 (책 3-05, 14168 46강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/003-06)
+- 작업: security 의존성(+ thymeleaf-extras-springsecurity6, security-test), `SecurityConfig`(SecurityFilterChain: 모든 요청 permitAll, H2 콘솔 CSRF 예외, X-Frame-Options SAMEORIGIN)
+- 이유: 회원가입·로그인 준비. 처음엔 모두 허용해 기존 기능을 깨지 않고 도입 (14168 46강). `th:action` 폼은 CSRF 토큰이 자동으로 들어감
+- 결과: 목록 200, 폼에 `_csrf` hidden, 토큰 없는 POST 403, 토큰 있는 POST 302, H2 콘솔 200
