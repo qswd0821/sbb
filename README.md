@@ -324,3 +324,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `AnswerService.getAnswer/modify/delete`, `GET/POST /answer/modify/{id}`, `DELETE /answer/delete/{id}`, `answer_form.html`, 상세에 답변별 본인만 수정·삭제 버튼과 `modified at`
 - 이유: 질문과 같은 규칙(작성자만, 서버에서 403 검사, 삭제는 DELETE)을 답변에도 적용
 - 결과: 답변 수정 200 → 302 + `modified at`, 남의 답변 삭제 403, 본인 답변 삭제 302 후 목록에서 사라짐
+
+### 003-13 추천, 질문·답변 추천 @ManyToMany (책 3-10)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/003-13)
+- 작업: `voter`(@ManyToMany `Set<SiteUser>`, `new HashSet<>()`), `QuestionService.vote`, `AnswerService.vote`, `POST /question/vote/{id}`, `POST /answer/vote/{id}`, 상세에 추천 버튼 + 추천 수 배지
+- 책과 차이: 추천은 데이터를 바꾸므로 GET 링크 대신 **POST 폼**(CSRF 보호)
+- 결과: 같은 사용자가 질문을 2번 추천해도 1, 답변 추천 1, GET 요청은 405

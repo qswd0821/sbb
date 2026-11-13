@@ -8,11 +8,14 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -36,4 +39,8 @@ public class Answer {
     // 글쓴이
     @ManyToOne(fetch = FetchType.LAZY)
     private SiteUser author;
+
+    // 추천인 (한 사용자는 한 번만 → Set). 중간 테이블(question_voter / answer_voter)이 생긴다
+    @ManyToMany
+    private Set<SiteUser> voter = new HashSet<>();
 }

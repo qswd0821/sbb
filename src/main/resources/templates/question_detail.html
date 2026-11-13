@@ -19,8 +19,15 @@
                     <div th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></div>
                 </div>
             </div>
-            <!-- 작성자 본인에게만 수정 버튼 -->
+            <!-- 추천(누구나 로그인하면 가능, POST) + 작성자 본인에게만 수정/삭제 -->
             <div class="my-3">
+                <form th:action="@{|/question/vote/${question.id}|}" method="post" class="d-inline"
+                      onsubmit="return confirm('정말로 추천하시겠습니까?');">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">
+                        추천
+                        <span class="badge rounded-pill bg-success" th:text="${#lists.size(question.voter)}"></span>
+                    </button>
+                </form>
                 <a th:href="@{|/question/modify/${question.id}|}" class="btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
                    th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
@@ -54,14 +61,24 @@
                     <div th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></div>
                 </div>
             </div>
-            <!-- 답변 작성자 본인에게만 수정/삭제 -->
-            <div class="my-3" sec:authorize="isAuthenticated()"
-                 th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}">
-                <a th:href="@{|/answer/modify/${answer.id}|}" class="btn btn-sm btn-outline-secondary">수정</a>
-                <form th:action="@{|/answer/delete/${answer.id}|}" th:method="delete" class="d-inline"
-                      onsubmit="return confirm('정말로 삭제하시겠습니까?');">
-                    <button type="submit" class="btn btn-sm btn-outline-secondary">삭제</button>
+            <div class="my-3">
+                <!-- 답변 추천 -->
+                <form th:action="@{|/answer/vote/${answer.id}|}" method="post" class="d-inline"
+                      onsubmit="return confirm('정말로 추천하시겠습니까?');">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">
+                        추천
+                        <span class="badge rounded-pill bg-success" th:text="${#lists.size(answer.voter)}"></span>
+                    </button>
                 </form>
+                <!-- 답변 작성자 본인에게만 수정/삭제 -->
+                <th:block sec:authorize="isAuthenticated()"
+                          th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}">
+                    <a th:href="@{|/answer/modify/${answer.id}|}" class="btn btn-sm btn-outline-secondary">수정</a>
+                    <form th:action="@{|/answer/delete/${answer.id}|}" th:method="delete" class="d-inline"
+                          onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">삭제</button>
+                    </form>
+                </th:block>
             </div>
         </div>
     </div>

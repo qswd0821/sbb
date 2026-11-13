@@ -100,6 +100,16 @@ public class QuestionController {
         return "redirect:/";
     }
 
+    // 책은 GET /question/vote/{id}. 데이터를 바꾸는 요청이므로 POST (CSRF 보호)
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/vote/{id}")
+    public String questionVote(@PathVariable("id") Integer id, Principal principal) {
+        Question question = questionService.getQuestion(id);
+        SiteUser siteUser = userService.getUser(principal.getName());
+        questionService.vote(question, siteUser);
+        return "redirect:/question/detail/%d".formatted(id);
+    }
+
     // 작성자 본인만 허용. 책은 400(BAD_REQUEST), 여기서는 의미에 맞게 403(FORBIDDEN)
     private void checkAuthor(SiteUser author, Principal principal, String message) {
         if (author == null || !author.getUsername().equals(principal.getName())) {

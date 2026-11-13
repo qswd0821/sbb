@@ -74,6 +74,16 @@ public class AnswerController {
         return "redirect:/question/detail/%d".formatted(questionId);
     }
 
+    // 책은 GET /answer/vote/{id}. 데이터를 바꾸는 요청이므로 POST (CSRF 보호)
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/vote/{id}")
+    public String answerVote(@PathVariable("id") Integer id, Principal principal) {
+        Answer answer = answerService.getAnswer(id);
+        SiteUser siteUser = userService.getUser(principal.getName());
+        answerService.vote(answer, siteUser);
+        return "redirect:/question/detail/%d".formatted(answer.getQuestion().getId());
+    }
+
     private void checkAuthor(SiteUser author, Principal principal, String message) {
         if (author == null || !author.getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, message);

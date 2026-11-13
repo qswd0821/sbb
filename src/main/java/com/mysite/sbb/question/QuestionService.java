@@ -47,6 +47,11 @@ public class QuestionService {
         questionRepository.save(question);
     }
 
+    public void vote(Question question, SiteUser siteUser) {
+        question.getVoter().add(siteUser); // Set 이라 같은 사용자가 여러 번 추천해도 1번만 반영
+        questionRepository.save(question);
+    }
+
     public void delete(Question question) {
         questionRepository.delete(question); // cascade REMOVE 로 답변도 함께 삭제
     }
