@@ -318,3 +318,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `spring.mvc.hiddenmethod.filter.enabled: true`, `@DeleteMapping("/delete/{id}")`, `QuestionService.delete`, 상세에 본인만 `삭제` 폼(`th:method="delete"` + confirm)
 - 책과 차이: 책은 `GET /question/delete/{id}` 링크 + JS. GET은 조회용이라 링크 미리보기·크롤러로도 삭제될 수 있고 CSRF 보호도 없음 → **DELETE 메서드 + CSRF 토큰** (14168 41강, 14163 37강 URL 표)
 - 결과: 본인 삭제 → 302 `/` 후 상세 404, 남의 질문 → 403, GET 방식 요청 → 405
+
+### 003-12 수정·삭제, 답변 수정과 삭제 (책 3-09)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/003-12)
+- 작업: `AnswerService.getAnswer/modify/delete`, `GET/POST /answer/modify/{id}`, `DELETE /answer/delete/{id}`, `answer_form.html`, 상세에 답변별 본인만 수정·삭제 버튼과 `modified at`
+- 이유: 질문과 같은 규칙(작성자만, 서버에서 403 검사, 삭제는 DELETE)을 답변에도 적용
+- 결과: 답변 수정 200 → 302 + `modified at`, 남의 답변 삭제 403, 본인 답변 삭제 302 후 목록에서 사라짐

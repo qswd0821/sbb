@@ -6,13 +6,17 @@ import com.mysite.sbb.user.SiteUser;
 import com.mysite.sbb.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 
@@ -36,5 +40,43 @@ public class AnswerController {
         }
         answerService.create(question, answerForm.getContent(), siteUser);
         return "redirect:/question/detail/%d".formatted(id); // POST 처리 후 302 → 새로고침 시 중복 등록 방지
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modify/{id}")
+    public String answerModify(AnswerForm answerForm, @PathVariable("id") Integer id, Principal principal) {
+        Answer answer = answerService.getAnswer(id);
+        checkAuthor(answer.getAuthor(), principal, "수정권한이 없습니다.");
+        answerForm.setContent(answer.getContent());
+        return "answer_form";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify/{id}")
+    public String answerModify(@Valid AnswerForm answerForm, BindingResult bindingResult,
+                               @PathVariable("id") Integer id, Principal principal) {
+        if (bindingResult.hasErrors()) {
+            return "answer_form";
+        }
+        Answer answer = answerService.getAnswer(id);
+        checkAuthor(answer.getAuthor(), principal, "수정권한이 없습니다.");
+        answerService.modify(answer, answerForm.getContent());
+        return "redirect:/question/detail/%d".formatted(answer.getQuestion().getId());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/delete/{id}")
+    public String answerDelete(@PathVariable("id") Integer id, Principal principal) {
+        Answer answer = answerService.getAnswer(id);
+        checkAuthor(answer.getAuthor(), principal, "삭제권한이 없습니다.");
+        Integer questionId = answer.getQuestion().getId(); // LAZY 프록시라도 id 는 추가 조회 없이 얻을 수 있다
+        answerService.delete(answer);
+        return "redirect:/question/detail/%d".formatted(questionId);
+    }
+
+    private void checkAuthor(SiteUser author, Principal principal, String message) {
+        if (author == null || !author.getUsername().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, message);
+        }
     }
 }
