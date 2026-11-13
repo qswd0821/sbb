@@ -5,6 +5,16 @@
 ## 개발 환경
 - Java 25 / Spring Boot 4.1.2 / Gradle 9.8.2 (Kotlin DSL)
 
+## 실행 방법
+시스템 기본 Java가 8이므로, 명령마다 `JAVA_HOME`을 JDK 25로 지정한다.
+
+```bash
+JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew bootRun   # 서버 실행 → http://localhost:8080
+JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
+```
+
+인텔리제이에서는 Project Structure → SDK를 `ms-25` 로 지정하면 된다.
+
 ## 작업내역
 
 ### 001-01 프로젝트 세팅, git 저장소 초기화 및 README 작성
@@ -27,3 +37,8 @@
 - 작업: `GET /hello` → `"Hello World"` 를 반환하는 `HelloController` 추가 (책 1장 스프링부트 맛보기)
 - 이유: 요청 → 컨트롤러 → 응답 흐름과 DevTools 자동 재시작이 동작하는지 확인
 - 결과: `./gradlew classes` 후 DevTools가 서버를 자동 재시작(1.96초), 브라우저에 `Hello World` 표시
+
+### 001-05 프로젝트 세팅, 완료
+- 작업: README에 실행 방법(JDK 25 지정 방법) 정리
+- 이유: 시스템 Java가 8이라 그냥 `gradlew`를 실행하면 실패함, 다시 와도 바로 실행할 수 있도록 기록
+- 결과: 작업환경 세팅(001) 완료 — git, 프로젝트 생성, 빌드, 서버 실행, 첫 응답까지 확인
