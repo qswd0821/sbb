@@ -12,6 +12,9 @@
                 <li class="nav-item" th:each="c : ${categoryList}">
                     <a class="nav-link" th:href="@{/question/list(category=${c.id})}" th:text="${c.name}"></a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/recent}">최근 활동</a>
+                </li>
             </ul>
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <!-- 로그인 전 -->

@@ -16,6 +16,9 @@ public interface AnswerRepository extends JpaRepository<Answer, Integer> {
 
     long countByAuthor(SiteUser author);
 
+    // 최근 답변 10개 (전체 사용자)
+    List<Answer> findTop10ByOrderByCreateDateDesc();
+
     // 최신순 등 Pageable 의 Sort 로 정렬 가능한 경우
     Page<Answer> findByQuestion(Question question, Pageable pageable);
 

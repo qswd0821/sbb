@@ -379,3 +379,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `ProfileController`(GET /user/profile, 로그인 필요), 질문·답변·댓글 리포지터리에 `findTop10ByAuthorOrderByCreateDateDesc`, `countByAuthor`, `profile.html`(기본 정보, 활동 수, 최근 질문/답변/댓글 링크), navbar 사용자명 → 프로필 링크
 - 이유: 내가 쓴 글을 한곳에서 확인
 - 결과: user1 프로필 `질문 3 · 답변 6 · 댓글 1` 과 최근 목록, 비로그인 → 로그인 페이지
+
+### 004-06 추가 기능, 최근 답변·최근 댓글 화면 (책 3-14)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/004-06)
+- 작업: `RecentController`(GET /recent), 답변·댓글 `findTop10ByOrderByCreateDateDesc`, `recent.html`(최근 답변: 내용·질문 제목·작성자·시각, 최근 댓글), navbar `최근 활동` 메뉴
+- 이유: 질문 목록만으로는 오래된 질문에 새로 달린 답변·댓글을 알 수 없음
+- 결과: `/recent` 200, 최근 답변 `paging answer 5 / 질문: 스프링부트 모델 질문입니다. / user1` 순서로 표시

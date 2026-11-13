@@ -1,0 +1,43 @@
+<html layout:decorate="~{layout}" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head><title>최근 활동</title></head>
+<div layout:fragment="content" class="container my-3">
+    <h4 class="border-bottom pb-2">최근 활동</h4>
+    <div class="row">
+        <div class="col-md-6">
+            <h6 class="border-bottom pb-2">최근 답변</h6>
+            <table class="table table-sm small">
+                <tbody>
+                <tr th:each="a : ${answerList}">
+                    <td>
+                        <a th:href="@{|/question/detail/${a.question.id}#answer_${a.id}|}"
+                           th:text="${#strings.abbreviate(a.content, 40)}"></a>
+                        <div class="text-muted" th:text="|질문: ${a.question.subject}|"></div>
+                    </td>
+                    <td class="text-nowrap text-muted">
+                        <div th:text="${a.author != null ? a.author.username : ''}"></div>
+                        <div th:text="${#temporals.format(a.createDate, 'MM-dd HH:mm')}"></div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h6 class="border-bottom pb-2">최근 댓글</h6>
+            <table class="table table-sm small">
+                <tbody>
+                <tr th:each="c : ${commentList}">
+                    <td>
+                        <a th:href="@{|/question/detail/${c.questionId}|}"
+                           th:text="${#strings.abbreviate(c.content, 40)}"></a>
+                    </td>
+                    <td class="text-nowrap text-muted">
+                        <div th:text="${c.author != null ? c.author.username : ''}"></div>
+                        <div th:text="${#temporals.format(c.createDate, 'MM-dd HH:mm')}"></div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</html>

@@ -10,4 +10,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> findTop10ByAuthorOrderByCreateDateDesc(SiteUser author);
 
     long countByAuthor(SiteUser author);
+
+    // 최근 댓글 10개 (전체 사용자)
+    List<Comment> findTop10ByOrderByCreateDateDesc();
 }

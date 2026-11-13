@@ -35,6 +35,10 @@ public class CommentService {
         return commentRepository.countByAuthor(author);
     }
 
+    public List<Comment> getRecentList() {
+        return commentRepository.findTop10ByOrderByCreateDateDesc();
+    }
+
     public Comment getComment(Integer id) {
         return commentRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("comment not found"));

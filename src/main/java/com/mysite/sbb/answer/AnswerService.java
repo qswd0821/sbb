@@ -45,6 +45,10 @@ public class AnswerService {
         return answerRepository.countByAuthor(author);
     }
 
+    public List<Answer> getRecentList() {
+        return answerRepository.findTop10ByOrderByCreateDateDesc();
+    }
+
     public Answer getAnswer(Integer id) {
         return answerRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("answer not found"));
