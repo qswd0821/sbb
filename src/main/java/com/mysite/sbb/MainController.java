@@ -15,6 +15,6 @@ public class MainController {
 
     @GetMapping("/")
     public String root() {
-        return "redirect:/question/list"; // 302 응답 + Location 헤더 → 브라우저가 목록으로 다시 요청
+        return "redirect:/questions"; // 302 응답 + Location 헤더 → 브라우저가 목록으로 다시 요청
     }
 }

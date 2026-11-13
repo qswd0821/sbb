@@ -1,5 +1,6 @@
 package com.mysite.sbb.comment;
 
+import com.mysite.sbb.DataNotFoundException;
 import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.answer.AnswerService;
 import com.mysite.sbb.question.Question;
@@ -21,7 +22,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
-@RequestMapping("/comment")
+// 댓글은 질문 상세 화면에 속한 자원 : /questions/{questionId}/comments/..., /questions/{questionId}/answers/{answerId}/comments/...
+@RequestMapping("/questions/{questionId}")
 @Controller
 @RequiredArgsConstructor
 public class CommentController {
@@ -31,37 +33,42 @@ public class CommentController {
     private final UserService userService;
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/create/question/{id}")
-    public String createForQuestion(@PathVariable("id") Integer id, @Valid CommentForm commentForm,
+    @PostMapping("/comments/write")
+    public String createForQuestion(@PathVariable("questionId") Integer id, @Valid CommentForm commentForm,
                                     BindingResult bindingResult, Principal principal, RedirectAttributes ra) {
         Question question = questionService.getQuestion(id);
         if (!rejectIfInvalid(bindingResult, ra)) {
             commentService.create(question, commentForm.content(), currentUser(principal));
         }
-        return "redirect:/question/detail/%d".formatted(id);
+        return "redirect:/questions/%d".formatted(id);
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/create/answer/{id}")
-    public String createForAnswer(@PathVariable("id") Integer id, @Valid CommentForm commentForm,
+    @PostMapping("/answers/{answerId}/comments/write")
+    public String createForAnswer(@PathVariable("questionId") Integer questionId,
+                                  @PathVariable("answerId") Integer id, @Valid CommentForm commentForm,
                                   BindingResult bindingResult, Principal principal, RedirectAttributes ra) {
-        Answer answer = answerService.getAnswer(id);
+        Answer answer = answerService.getAnswer(questionId, id);
         if (!rejectIfInvalid(bindingResult, ra)) {
             commentService.create(answer, commentForm.content(), currentUser(principal));
         }
-        return "redirect:/question/detail/%d#answer_%d".formatted(answer.getQuestion().getId(), id);
+        return "redirect:/questions/%d#answer_%d".formatted(questionId, id);
     }
 
     @PreAuthorize("isAuthenticated()")
-    @DeleteMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Integer id, Principal principal) {
+    // 질문 댓글·답변 댓글 모두 상세 화면(질문) 기준 주소. 다른 질문의 댓글 id 면 404
+    @DeleteMapping("/comments/{id}/delete")
+    public String delete(@PathVariable("questionId") Integer questionId,
+                         @PathVariable("id") Integer id, Principal principal) {
         Comment comment = commentService.getComment(id);
+        if (!comment.getQuestionId().equals(questionId)) {
+            throw new DataNotFoundException("comment not found");
+        }
         if (comment.getAuthor() == null || !comment.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "삭제권한이 없습니다.");
         }
-        Integer questionId = comment.getQuestionId();
         commentService.delete(comment);
-        return "redirect:/question/detail/%d".formatted(questionId);
+        return "redirect:/questions/%d".formatted(questionId);
     }
 
     // 댓글은 상세 페이지 안의 작은 폼이라 오류 시 폼을 다시 그리지 않고, 메시지만 1회성으로 전달 (flash attribute)

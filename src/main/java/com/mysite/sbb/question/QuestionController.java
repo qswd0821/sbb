@@ -18,13 +18,15 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 
-@RequestMapping("/question") // 이 컨트롤러의 모든 URL 앞에 /question 이 붙는다
+// 자원(질문 목록) 중심 URL (14163 37강 URL 표, 14168) : /questions, /questions/{id}, /questions/{id}/modify ...
+@RequestMapping("/questions")
 @Controller
 @RequiredArgsConstructor
 public class QuestionController {
@@ -33,8 +35,8 @@ public class QuestionController {
     private final AnswerService answerService;
     private final CategoryService categoryService;
 
-    // /question/list?page=0 형태, page 파라미터가 없으면 0 (첫 페이지)
-    @GetMapping("/list")
+    // /questions?page=0 형태, page 파라미터가 없으면 0 (첫 페이지)
+    @GetMapping
     // category : 카테고리 id (없으면 전체)
     public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
                        @RequestParam(value = "kw", defaultValue = "") String kw,
@@ -48,7 +50,7 @@ public class QuestionController {
     }
 
     // answerPage : 답변 페이지(0부터), answerSort : latest(최신순, 기본) / vote(추천순)
-    @GetMapping("/detail/{id}")
+    @GetMapping("/{id}")
     public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm,
                          @RequestParam(value = "answerPage", defaultValue = "0") int answerPage,
                          @RequestParam(value = "answerSort", defaultValue = "latest") String answerSort) {
@@ -65,7 +67,7 @@ public class QuestionController {
     // 빈 QuestionForm 을 모델에 넣어야 템플릿의 th:object="${questionForm}" 이 동작한다
     // 로그인하지 않은 사용자가 접근하면 시큐리티가 로그인 페이지로 보낸다
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/create")
+    @GetMapping("/write")
     public String questionCreate(QuestionForm questionForm) {
         return "question_form";
     }
@@ -74,7 +76,7 @@ public class QuestionController {
     // BindingResult : 검사 실패 시 예외를 던지지 않고 결과를 담아 둔다 → 폼을 다시 보여줌 (14168 13강)
     // Principal : 현재 로그인한 사용자 정보 (getName() = username)
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/create")
+    @PostMapping("/write")
     public String questionCreate(@Valid QuestionForm questionForm, BindingResult bindingResult, Principal principal) {
         if (bindingResult.hasErrors()) {
             return "question_form"; // 입력값은 questionForm 에 남아 있어 그대로 다시 표시된다
@@ -82,38 +84,42 @@ public class QuestionController {
         SiteUser siteUser = userService.getUser(principal.getName());
         Category category = categoryService.getCategory(questionForm.categoryId());
         questionService.create(questionForm.subject(), questionForm.content(), siteUser, category);
-        return "redirect:/question/list?category=%d".formatted(category.getId());
+        return "redirect:/questions?category=%d".formatted(category.getId());
     }
 
     // 수정 폼 : 기존 값을 폼 객체에 채워서 question_form 재사용
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/modify/{id}")
+    @GetMapping("/{id}/modify")
     public String questionModify(Model model, @PathVariable("id") Integer id, Principal principal) {
         Question question = questionService.getQuestion(id);
         checkAuthor(question.getAuthor(), principal, "수정권한이 없습니다.");
+        model.addAttribute("question", question); // 폼이 등록(POST)인지 수정(PUT)인지 구분
         Integer categoryId = question.getCategory() != null ? question.getCategory().getId() : null;
         model.addAttribute("questionForm", new QuestionForm(categoryId, question.getSubject(), question.getContent()));
         return "question_form";
     }
 
+    // 수정은 PUT (폼의 hidden _method=put → HiddenHttpMethodFilter, 14168 26강)
+    // 권한 검사를 검증보다 먼저 : 남의 글에 잘못된 값을 보내도 오류 폼이 아니라 403
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/modify/{id}")
-    public String questionModify(@Valid QuestionForm questionForm, BindingResult bindingResult,
+    @PutMapping("/{id}/modify")
+    public String questionModify(Model model, @Valid QuestionForm questionForm, BindingResult bindingResult,
                                  @PathVariable("id") Integer id, Principal principal) {
-        if (bindingResult.hasErrors()) {
-            return "question_form";
-        }
         Question question = questionService.getQuestion(id);
         checkAuthor(question.getAuthor(), principal, "수정권한이 없습니다.");
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("question", question);
+            return "question_form";
+        }
         questionService.modify(question, questionForm.subject(), questionForm.content(),
                 categoryService.getCategory(questionForm.categoryId()));
-        return "redirect:/question/detail/%d".formatted(id);
+        return "redirect:/questions/%d".formatted(id);
     }
 
     // 책은 GET /question/delete/{id} 이지만, 삭제는 DELETE 메서드로 (14168 41강, 14163 37강 URL 표)
     // 폼의 hidden _method=delete 를 HiddenHttpMethodFilter 가 DELETE 요청으로 바꿔 준다
     @PreAuthorize("isAuthenticated()")
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}/delete")
     public String questionDelete(@PathVariable("id") Integer id, Principal principal) {
         Question question = questionService.getQuestion(id);
         checkAuthor(question.getAuthor(), principal, "삭제권한이 없습니다.");
@@ -123,12 +129,12 @@ public class QuestionController {
 
     // 책은 GET /question/vote/{id}. 데이터를 바꾸는 요청이므로 POST (CSRF 보호)
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/vote/{id}")
+    @PostMapping("/{id}/vote")
     public String questionVote(@PathVariable("id") Integer id, Principal principal) {
         Question question = questionService.getQuestion(id);
         SiteUser siteUser = userService.getUser(principal.getName());
         questionService.vote(question, siteUser);
-        return "redirect:/question/detail/%d".formatted(id);
+        return "redirect:/questions/%d".formatted(id);
     }
 
     // 작성자 본인만 허용. 책은 400(BAD_REQUEST), 여기서는 의미에 맞게 403(FORBIDDEN)

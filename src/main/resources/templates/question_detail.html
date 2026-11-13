@@ -22,19 +22,19 @@
             </div>
             <!-- 추천(누구나 로그인하면 가능, POST) + 작성자 본인에게만 수정/삭제 -->
             <div class="my-3">
-                <form th:action="@{|/question/vote/${question.id}|}" method="post" class="d-inline"
+                <form th:action="@{|/questions/${question.id}/vote|}" method="post" class="d-inline"
                       onsubmit="return confirm('정말로 추천하시겠습니까?');">
                     <button type="submit" class="btn btn-sm btn-outline-secondary">
                         추천
                         <span class="badge rounded-pill bg-success" th:text="${#lists.size(question.voter)}"></span>
                     </button>
                 </form>
-                <a th:href="@{|/question/modify/${question.id}|}" class="btn btn-sm btn-outline-secondary"
+                <a th:href="@{|/questions/${question.id}/modify|}" class="btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
                    th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
                    th:text="수정"></a>
                 <!-- th:method="delete" → 타임리프가 <input type="hidden" name="_method" value="delete"> 와 CSRF 토큰을 넣어 준다 -->
-                <form th:action="@{|/question/delete/${question.id}|}" th:method="delete" class="d-inline"
+                <form th:action="@{|/questions/${question.id}/delete|}" th:method="delete" class="d-inline"
                       onsubmit="return confirm('정말로 삭제하시겠습니까?');"
                       sec:authorize="isAuthenticated()"
                       th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}">
@@ -42,7 +42,7 @@
                 </form>
             </div>
             <!-- 질문 댓글 (3-14) -->
-            <div th:replace="~{comments :: commentsFragment(${question.commentList}, @{|/comment/create/question/${question.id}|})}"></div>
+            <div th:replace="~{comments :: commentsFragment(${question.commentList}, @{|/questions/${question.id}/comments/write|})}"></div>
         </div>
     </div>
     <!-- 댓글 검증 오류 (redirect 후 1회 표시되는 flash attribute) -->
@@ -51,15 +51,15 @@
     <div class="d-flex justify-content-between align-items-center border-bottom my-3 py-2">
         <h5 class="mb-0" th:text="|${answerPaging.totalElements}개의 답변이 있습니다.|"></h5>
         <div class="btn-group btn-group-sm">
-            <a th:href="@{/question/detail/{id}(id=${question.id}, answerSort='latest')}"
+            <a th:href="@{/questions/{id}(id=${question.id}, answerSort='latest')}"
                class="btn btn-outline-secondary" th:classappend="${answerSort != 'vote'} ? 'active'">최신순</a>
-            <a th:href="@{/question/detail/{id}(id=${question.id}, answerSort='vote')}"
+            <a th:href="@{/questions/{id}(id=${question.id}, answerSort='vote')}"
                class="btn btn-outline-secondary" th:classappend="${answerSort == 'vote'} ? 'active'">추천순</a>
         </div>
     </div>
     <!-- 답변 반복 시작 (현재 답변 페이지의 답변만) -->
     <div class="card my-3" th:each="answer : ${answerPaging}">
-        <a th:id="|answer_${answer.id}|"></a> <!-- 앵커: /question/detail/{id}#answer_{답변id} 로 이동하면 여기로 스크롤 -->
+        <a th:id="|answer_${answer.id}|"></a> <!-- 앵커: /questions/{id}#answer_{답변id} 로 이동하면 여기로 스크롤 -->
         <div class="card-body">
             <div class="card-text" th:utext="${commonUtil.markdown(answer.content)}"></div>
             <div class="d-flex justify-content-end">
@@ -76,7 +76,7 @@
             </div>
             <div class="my-3">
                 <!-- 답변 추천 -->
-                <form th:action="@{|/answer/vote/${answer.id}|}" method="post" class="d-inline"
+                <form th:action="@{|/questions/${question.id}/answers/${answer.id}/vote|}" method="post" class="d-inline"
                       onsubmit="return confirm('정말로 추천하시겠습니까?');">
                     <button type="submit" class="btn btn-sm btn-outline-secondary">
                         추천
@@ -86,35 +86,35 @@
                 <!-- 답변 작성자 본인에게만 수정/삭제 -->
                 <th:block sec:authorize="isAuthenticated()"
                           th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}">
-                    <a th:href="@{|/answer/modify/${answer.id}|}" class="btn btn-sm btn-outline-secondary">수정</a>
-                    <form th:action="@{|/answer/delete/${answer.id}|}" th:method="delete" class="d-inline"
+                    <a th:href="@{|/questions/${question.id}/answers/${answer.id}/modify|}" class="btn btn-sm btn-outline-secondary">수정</a>
+                    <form th:action="@{|/questions/${question.id}/answers/${answer.id}/delete|}" th:method="delete" class="d-inline"
                           onsubmit="return confirm('정말로 삭제하시겠습니까?');">
                         <button type="submit" class="btn btn-sm btn-outline-secondary">삭제</button>
                     </form>
                 </th:block>
             </div>
             <!-- 답변 댓글 (3-14) -->
-            <div th:replace="~{comments :: commentsFragment(${answer.commentList}, @{|/comment/create/answer/${answer.id}|})}"></div>
+            <div th:replace="~{comments :: commentsFragment(${answer.commentList}, @{|/questions/${question.id}/answers/${answer.id}/comments/write|})}"></div>
         </div>
     </div>
     <!-- 답변 페이징 : 정렬 기준(answerSort) 유지 -->
     <ul class="pagination pagination-sm justify-content-center" th:if="${answerPaging.totalPages > 1}">
         <li class="page-item" th:classappend="${!answerPaging.hasPrevious} ? 'disabled'">
             <a class="page-link"
-               th:href="@{/question/detail/{id}(id=${question.id}, answerPage=${answerPaging.number-1}, answerSort=${answerSort})}">이전</a>
+               th:href="@{/questions/{id}(id=${question.id}, answerPage=${answerPaging.number-1}, answerSort=${answerSort})}">이전</a>
         </li>
         <li th:each="p : ${#numbers.sequence(0, answerPaging.totalPages-1)}" class="page-item"
             th:classappend="${p == answerPaging.number} ? 'active'">
             <a class="page-link" th:text="${p + 1}"
-               th:href="@{/question/detail/{id}(id=${question.id}, answerPage=${p}, answerSort=${answerSort})}"></a>
+               th:href="@{/questions/{id}(id=${question.id}, answerPage=${p}, answerSort=${answerSort})}"></a>
         </li>
         <li class="page-item" th:classappend="${!answerPaging.hasNext} ? 'disabled'">
             <a class="page-link"
-               th:href="@{/question/detail/{id}(id=${question.id}, answerPage=${answerPaging.number+1}, answerSort=${answerSort})}">다음</a>
+               th:href="@{/questions/{id}(id=${question.id}, answerPage=${answerPaging.number+1}, answerSort=${answerSort})}">다음</a>
         </li>
     </ul>
     <!-- 답변 작성 : 로그인하지 않으면 입력창 비활성화 -->
-    <form th:action="@{|/answer/create/${question.id}|}" th:object="${answerForm}" method="post" class="my-3">
+    <form th:action="@{|/questions/${question.id}/answers/write|}" th:object="${answerForm}" method="post" class="my-3">
         <div th:replace="~{form_errors :: formErrorsFragment}"></div>
         <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" rows="10" class="form-control"
                   placeholder="로그인 후 답변을 작성할 수 있습니다."></textarea>

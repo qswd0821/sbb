@@ -465,3 +465,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 폼 5개(QuestionForm, AnswerForm, CommentForm, UserCreateForm, PasswordChangeForm)를 `class + @Getter/@Setter` → `record` (14168 40강)
 - 컨트롤러는 `form.getX()` → `form.x()`, 수정 폼 GET 은 setter 대신 `new QuestionForm(...)` 을 모델에 추가
 - 템플릿(`th:object`, `th:field`)은 변경 없음
+
+### 005-05 강사 기법, REST 스타일 URL 과 수정은 PUT
+- [코드 보기](https://github.com/qswd0821/sbb/tree/005-05)
+- 질문 `/question/list`, `/question/detail/{id}` … → `/questions`, `/questions/{id}`, `/questions/write`, `/questions/{id}/modify` (14163 37강, 14168)
+- 답변·댓글은 질문 아래 자원 : `/questions/{questionId}/answers/{id}/modify`, `/questions/{questionId}/comments/{id}/delete`
+- 수정은 `@PutMapping` + `th:method="put"`, URL 의 부모 id 와 실제 소속이 다르면 404

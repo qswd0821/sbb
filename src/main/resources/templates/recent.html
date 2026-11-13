@@ -9,7 +9,7 @@
                 <tbody>
                 <tr th:each="a : ${answerList}">
                     <td>
-                        <a th:href="@{|/question/detail/${a.question.id}#answer_${a.id}|}"
+                        <a th:href="@{|/questions/${a.question.id}#answer_${a.id}|}"
                            th:text="${#strings.abbreviate(a.content, 40)}"></a>
                         <div class="text-muted" th:text="|질문: ${a.question.subject}|"></div>
                     </td>
@@ -27,7 +27,7 @@
                 <tbody>
                 <tr th:each="c : ${commentList}">
                     <td>
-                        <a th:href="@{|/question/detail/${c.questionId}|}"
+                        <a th:href="@{|/questions/${c.questionId}|}"
                            th:text="${#strings.abbreviate(c.content, 40)}"></a>
                     </td>
                     <td class="text-nowrap text-muted">

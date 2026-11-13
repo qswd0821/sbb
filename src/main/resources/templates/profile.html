@@ -22,7 +22,7 @@
             <h6 class="border-bottom pb-2">최근 질문</h6>
             <ul class="list-unstyled small">
                 <li th:each="q : ${questionList}" class="mb-1">
-                    <a th:href="@{|/question/detail/${q.id}|}" th:text="${q.subject}"></a>
+                    <a th:href="@{|/questions/${q.id}|}" th:text="${q.subject}"></a>
                     <span class="text-muted" th:text="${#temporals.format(q.createDate, 'MM-dd HH:mm')}"></span>
                 </li>
                 <li th:if="${#lists.isEmpty(questionList)}" class="text-muted">작성한 질문이 없습니다.</li>
@@ -33,7 +33,7 @@
             <h6 class="border-bottom pb-2">최근 답변</h6>
             <ul class="list-unstyled small">
                 <li th:each="a : ${answerList}" class="mb-1">
-                    <a th:href="@{|/question/detail/${a.question.id}#answer_${a.id}|}"
+                    <a th:href="@{|/questions/${a.question.id}#answer_${a.id}|}"
                        th:text="${#strings.abbreviate(a.content, 30)}"></a>
                     <span class="text-muted" th:text="${#temporals.format(a.createDate, 'MM-dd HH:mm')}"></span>
                 </li>
@@ -45,7 +45,7 @@
             <h6 class="border-bottom pb-2">최근 댓글</h6>
             <ul class="list-unstyled small">
                 <li th:each="c : ${commentList}" class="mb-1">
-                    <a th:href="@{|/question/detail/${c.questionId}|}"
+                    <a th:href="@{|/questions/${c.questionId}|}"
                        th:text="${#strings.abbreviate(c.content, 30)}"></a>
                     <span class="text-muted" th:text="${#temporals.format(c.createDate, 'MM-dd HH:mm')}"></span>
                 </li>

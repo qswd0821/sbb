@@ -53,6 +53,17 @@ public class AnswerService {
                 .orElseThrow(() -> new DataNotFoundException("answer not found"));
     }
 
+    // URL 이 /questions/{questionId}/answers/{id} 이므로, 답변이 그 질문에 속하는지까지 확인
+    // (예: /questions/1/answers/44 인데 44번 답변이 368번 질문 소속이면 404)
+    // LAZY 프록시의 getId() 는 추가 조회 없이 FK 값만 사용
+    public Answer getAnswer(Integer questionId, Integer id) {
+        Answer answer = getAnswer(id);
+        if (!answer.getQuestion().getId().equals(questionId)) {
+            throw new DataNotFoundException("answer not found");
+        }
+        return answer;
+    }
+
     @Transactional
     public void modify(Answer answer, String content) {
         answer.modify(content);

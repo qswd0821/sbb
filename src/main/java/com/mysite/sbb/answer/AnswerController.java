@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 
-@RequestMapping("/answer")
+// 답변은 질문에 속한 자원 : /questions/{questionId}/answers/{id}/... (강사 /posts/{postId}/comments/{id})
+@RequestMapping("/questions/{questionId}/answers")
 @Controller
 @RequiredArgsConstructor
 public class AnswerController {
@@ -29,8 +31,8 @@ public class AnswerController {
     private final UserService userService;
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/create/{id}")
-    public String createAnswer(Model model, @PathVariable("id") Integer id,
+    @PostMapping("/write")
+    public String createAnswer(Model model, @PathVariable("questionId") Integer id,
                                @Valid AnswerForm answerForm, BindingResult bindingResult, Principal principal) {
         Question question = questionService.getQuestion(id);
         SiteUser siteUser = userService.getUser(principal.getName());
@@ -43,49 +45,54 @@ public class AnswerController {
         }
         Answer answer = answerService.create(question, answerForm.content(), siteUser);
         // #answer_{id} : 페이지 이동 후 방금 등록한 답변 위치로 스크롤 (앵커)
-        return "redirect:/question/detail/%d#answer_%d".formatted(id, answer.getId());
+        return "redirect:/questions/%d#answer_%d".formatted(id, answer.getId());
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/modify/{id}")
-    public String answerModify(Model model, @PathVariable("id") Integer id, Principal principal) {
-        Answer answer = answerService.getAnswer(id);
+    @GetMapping("/{id}/modify")
+    public String answerModify(Model model, @PathVariable("questionId") Integer questionId,
+                               @PathVariable("id") Integer id, Principal principal) {
+        Answer answer = answerService.getAnswer(questionId, id);
         checkAuthor(answer.getAuthor(), principal, "수정권한이 없습니다.");
+        model.addAttribute("answer", answer); // 폼의 PUT 주소에 사용
         model.addAttribute("answerForm", new AnswerForm(answer.getContent()));
         return "answer_form";
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/modify/{id}")
-    public String answerModify(@Valid AnswerForm answerForm, BindingResult bindingResult,
+    @PutMapping("/{id}/modify")
+    public String answerModify(Model model, @Valid AnswerForm answerForm, BindingResult bindingResult,
+                               @PathVariable("questionId") Integer questionId,
                                @PathVariable("id") Integer id, Principal principal) {
+        Answer answer = answerService.getAnswer(questionId, id);
+        checkAuthor(answer.getAuthor(), principal, "수정권한이 없습니다.");
         if (bindingResult.hasErrors()) {
+            model.addAttribute("answer", answer);
             return "answer_form";
         }
-        Answer answer = answerService.getAnswer(id);
-        checkAuthor(answer.getAuthor(), principal, "수정권한이 없습니다.");
         answerService.modify(answer, answerForm.content());
-        return "redirect:/question/detail/%d#answer_%d".formatted(answer.getQuestion().getId(), answer.getId());
+        return "redirect:/questions/%d#answer_%d".formatted(questionId, id);
     }
 
     @PreAuthorize("isAuthenticated()")
-    @DeleteMapping("/delete/{id}")
-    public String answerDelete(@PathVariable("id") Integer id, Principal principal) {
-        Answer answer = answerService.getAnswer(id);
+    @DeleteMapping("/{id}/delete")
+    public String answerDelete(@PathVariable("questionId") Integer questionId,
+                               @PathVariable("id") Integer id, Principal principal) {
+        Answer answer = answerService.getAnswer(questionId, id);
         checkAuthor(answer.getAuthor(), principal, "삭제권한이 없습니다.");
-        Integer questionId = answer.getQuestion().getId(); // LAZY 프록시라도 id 는 추가 조회 없이 얻을 수 있다
         answerService.delete(answer);
-        return "redirect:/question/detail/%d".formatted(questionId);
+        return "redirect:/questions/%d".formatted(questionId);
     }
 
     // 책은 GET /answer/vote/{id}. 데이터를 바꾸는 요청이므로 POST (CSRF 보호)
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/vote/{id}")
-    public String answerVote(@PathVariable("id") Integer id, Principal principal) {
-        Answer answer = answerService.getAnswer(id);
+    @PostMapping("/{id}/vote")
+    public String answerVote(@PathVariable("questionId") Integer questionId,
+                             @PathVariable("id") Integer id, Principal principal) {
+        Answer answer = answerService.getAnswer(questionId, id);
         SiteUser siteUser = userService.getUser(principal.getName());
         answerService.vote(answer, siteUser);
-        return "redirect:/question/detail/%d#answer_%d".formatted(answer.getQuestion().getId(), answer.getId());
+        return "redirect:/questions/%d#answer_%d".formatted(questionId, id);
     }
 
     private void checkAuthor(SiteUser author, Principal principal, String message) {

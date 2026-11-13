@@ -13,7 +13,7 @@
                 <span th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}"></span>
             </span>
         </div>
-        <form th:action="@{|/comment/delete/${comment.id}|}" th:method="delete" class="ms-2"
+        <form th:action="@{|/questions/${comment.questionId}/comments/${comment.id}/delete|}" th:method="delete" class="ms-2"
               onsubmit="return confirm('댓글을 삭제하시겠습니까?');"
               sec:authorize="isAuthenticated()"
               th:if="${comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.username}">
