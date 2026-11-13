@@ -192,3 +192,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `MainController` 에 `GET /` → `redirect:/question/list`
 - 이유: 사이트 주소만 입력해도 메인 화면(질문 목록)이 보이도록
 - 결과: `/` → 302, `Location: /question/list`
+
+### 002-20 서비스, QuestionService 도입 (책 2-09, 14163 34강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-20)
+- 작업: `QuestionService.getList()`, 컨트롤러는 리포지터리 대신 서비스 사용
+- 이유: 컨트롤러는 요청/응답, 서비스는 비즈니스 로직, 리포지터리는 DB 접근으로 역할 분리. 여러 컨트롤러가 같은 로직 재사용
+- 결과: `/question/list` 동일하게 200
