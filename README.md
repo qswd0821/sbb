@@ -300,3 +300,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `UserRole`, `UserSecurityService`(loadUserByUsername), `findByUsername`, `formLogin`(/user/login), `logout`(/user/logout), `login_form.html`, navbar에 `sec:authorize` 로 로그인 전/후 메뉴
 - 책과 차이: 로그아웃을 GET 링크 대신 **POST 폼**(CSRF 토큰 포함). 시큐리티 7은 로그아웃을 POST로 받는 것이 기본이고, GET이면 다른 사이트의 링크로 강제 로그아웃될 수 있음
 - 결과: 틀린 비밀번호 → 302 `/user/login?error`, 로그인 → 302 `/` + navbar `user1 로그아웃`, 로그아웃 → 302 `/` + `로그인 회원가입`
+
+### 003-09 글쓴이, 질문·답변 author와 로그인 필요 처리 (책 3-08)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/003-09)
+- 작업: `Question.author`, `Answer.author`(@ManyToOne LAZY SiteUser), `Principal` 로 작성자 저장, `@PreAuthorize("isAuthenticated()")` + `@EnableMethodSecurity`, 목록 `글쓴이` 칸, 상세 작성자 표시, 비로그인 시 답변 입력창 비활성화
+- 이유: 누가 썼는지 기록. 질문 등록·답변 등록은 로그인 사용자만
+- 결과: 비로그인 `GET /question/create`·`POST /answer/create/1` → 302 `/user/login`, 로그인 후 등록한 질문의 글쓴이 `user1` 표시, 테스트 12건 통과

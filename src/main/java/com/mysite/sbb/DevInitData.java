@@ -26,7 +26,7 @@ public class DevInitData {
         return args -> {
             long count = questionService.count();
             for (long i = count + 1; i <= TARGET_COUNT; i++) {
-                questionService.create("테스트 데이터입니다:[%03d]".formatted(i), "내용무");
+                questionService.create("테스트 데이터입니다:[%03d]".formatted(i), "내용무", null);
             }
         };
     }

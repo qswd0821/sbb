@@ -116,7 +116,7 @@ class QuestionRepositoryTest {
         Question question = questionRepository.findById(2).get();
         int beforeCount = question.getAnswerList().size();
 
-        Answer newAnswer = question.addAnswer("네 자동으로 생성됩니다.");
+        Answer newAnswer = question.addAnswer("네 자동으로 생성됩니다.", null);
 
         // answerRepository.save 를 호출하지 않았다.
         // 아직 INSERT 전이라 id 는 null, flush(또는 커밋) 시점에 PERSIST cascade + 더티체킹으로 INSERT 된다.
