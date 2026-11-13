@@ -46,4 +46,8 @@ public class QuestionService {
         question.setModifyDate(LocalDateTime.now());
         questionRepository.save(question);
     }
+
+    public void delete(Question question) {
+        questionRepository.delete(question); // cascade REMOVE 로 답변도 함께 삭제
+    }
 }

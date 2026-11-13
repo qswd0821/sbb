@@ -6,6 +6,10 @@ spring:
     name: sbb
   profiles:
     active: dev
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true # 폼의 _method=delete/put 파라미터로 @DeleteMapping/@PutMapping 사용 (14168 41강)
   jpa:
     show-sql: true
     hibernate:

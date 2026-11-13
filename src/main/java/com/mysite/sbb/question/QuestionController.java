@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -86,6 +87,17 @@ public class QuestionController {
         checkAuthor(question.getAuthor(), principal, "수정권한이 없습니다.");
         questionService.modify(question, questionForm.getSubject(), questionForm.getContent());
         return "redirect:/question/detail/%d".formatted(id);
+    }
+
+    // 책은 GET /question/delete/{id} 이지만, 삭제는 DELETE 메서드로 (14168 41강, 14163 37강 URL 표)
+    // 폼의 hidden _method=delete 를 HiddenHttpMethodFilter 가 DELETE 요청으로 바꿔 준다
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/delete/{id}")
+    public String questionDelete(@PathVariable("id") Integer id, Principal principal) {
+        Question question = questionService.getQuestion(id);
+        checkAuthor(question.getAuthor(), principal, "삭제권한이 없습니다.");
+        questionService.delete(question);
+        return "redirect:/";
     }
 
     // 작성자 본인만 허용. 책은 400(BAD_REQUEST), 여기서는 의미에 맞게 403(FORBIDDEN)

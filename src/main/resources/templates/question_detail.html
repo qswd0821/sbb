@@ -25,6 +25,13 @@
                    sec:authorize="isAuthenticated()"
                    th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
                    th:text="수정"></a>
+                <!-- th:method="delete" → 타임리프가 <input type="hidden" name="_method" value="delete"> 와 CSRF 토큰을 넣어 준다 -->
+                <form th:action="@{|/question/delete/${question.id}|}" th:method="delete" class="d-inline"
+                      onsubmit="return confirm('정말로 삭제하시겠습니까?');"
+                      sec:authorize="isAuthenticated()"
+                      th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">삭제</button>
+                </form>
             </div>
         </div>
     </div>

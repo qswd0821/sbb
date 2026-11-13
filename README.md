@@ -312,3 +312,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `modifyDate`(질문·답변), `GET/POST /question/modify/{id}`, 작성자 확인 `checkAuthor`, `question_form` 재사용(th:action 생략 + CSRF hidden), 상세에 본인만 `수정` 버튼과 `modified at` 표시
 - 책과 차이: 권한 없음 응답을 400 대신 **403 FORBIDDEN** (의미에 맞는 상태 코드)
 - 결과: 본인 질문 수정 폼 200 → 저장 302 → 상세에 수정 내용·`modified at`, 남의 질문 수정 → 403
+
+### 003-11 삭제, 질문 삭제를 DELETE 메서드로 (책 3-09, 14168 41강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/003-11)
+- 작업: `spring.mvc.hiddenmethod.filter.enabled: true`, `@DeleteMapping("/delete/{id}")`, `QuestionService.delete`, 상세에 본인만 `삭제` 폼(`th:method="delete"` + confirm)
+- 책과 차이: 책은 `GET /question/delete/{id}` 링크 + JS. GET은 조회용이라 링크 미리보기·크롤러로도 삭제될 수 있고 CSRF 보호도 없음 → **DELETE 메서드 + CSRF 토큰** (14168 41강, 14163 37강 URL 표)
+- 결과: 본인 삭제 → 302 `/` 후 상세 404, 남의 질문 → 403, GET 방식 요청 → 405
