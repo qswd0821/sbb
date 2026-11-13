@@ -25,7 +25,16 @@ public class SecurityConfig {
                 // H2 콘솔 화면은 frame 으로 구성 → 같은 출처의 frame 은 허용
                 .headers(headers -> headers
                         .addHeaderWriter(new XFrameOptionsHeaderWriter(
-                                XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN)));
+                                XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN)))
+                // 로그인 : GET /user/login 은 우리 화면, POST /user/login 은 시큐리티가 처리
+                .formLogin(formLogin -> formLogin
+                        .loginPage("/user/login")
+                        .defaultSuccessUrl("/"))
+                // 로그아웃 : POST /user/logout (CSRF 토큰 필요 → 다른 사이트가 몰래 로그아웃시키지 못함)
+                .logout(logout -> logout
+                        .logoutUrl("/user/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true));
         return http.build();
     }
 

@@ -294,3 +294,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `user` 패키지(`SiteUser`, `UserRepository`, `UserService`, `UserCreateForm`, `UserController`), `signup_form.html`, `PasswordEncoder`(BCrypt) 빈, navbar 회원가입 링크
 - 이유: 회원 정보 저장. 비밀번호는 BCrypt 해시로 저장. 비밀번호 불일치·중복 가입은 폼 오류로 표시
 - 결과: 불일치 → 200 `2개의 패스워드가 일치하지 않습니다.`, 정상 → 302 `/`, 중복 → 200 `이미 등록된 사용자ID 또는 이메일입니다.`
+
+### 003-08 로그인·로그아웃, UserDetailsService와 폼 로그인 (책 3-07)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/003-08)
+- 작업: `UserRole`, `UserSecurityService`(loadUserByUsername), `findByUsername`, `formLogin`(/user/login), `logout`(/user/logout), `login_form.html`, navbar에 `sec:authorize` 로 로그인 전/후 메뉴
+- 책과 차이: 로그아웃을 GET 링크 대신 **POST 폼**(CSRF 토큰 포함). 시큐리티 7은 로그아웃을 POST로 받는 것이 기본이고, GET이면 다른 사이트의 링크로 강제 로그아웃될 수 있음
+- 결과: 틀린 비밀번호 → 302 `/user/login?error`, 로그인 → 302 `/` + navbar `user1 로그아웃`, 로그아웃 → 302 `/` + `로그인 회원가입`

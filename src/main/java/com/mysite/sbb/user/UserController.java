@@ -42,4 +42,10 @@ public class UserController {
 
         return "redirect:/";
     }
+
+    // 로그인 화면만 보여준다. POST /user/login 처리는 스프링 시큐리티가 담당
+    @GetMapping("/login")
+    public String login() {
+        return "login_form";
+    }
 }
