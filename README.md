@@ -348,3 +348,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `QuestionRepository.findAllByKeyword`(@Query JPQL, left outer join + distinct + Pageable), `getList(page, kw)`, 컨트롤러 `kw` 파라미터, 목록 상단 검색창(GET 폼), 페이지 링크에 `kw` 유지
 - 책과 차이: 책은 숨은 searchForm + 자바스크립트로 page/kw를 제출. 여기서는 **GET 검색 폼 + `@{/question/list(page=..., kw=...)}` 링크**로 JS 없이 처리 (검색 결과 URL 공유·새로고침 가능)
 - 결과: `kw=markdown` 1건, `kw=user1` 3건(글쓴이), `kw=anchor` → 답변 내용으로 2번 질문, 없는 검색어 0건
+
+### 004-01 추가 기능, 답변 페이징과 최신순·추천순 정렬 (책 3-14)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/004-01)
+- 작업: `AnswerRepository.findByQuestion(Pageable)`, 추천순 `@Query`(left join voter, group by, count desc), `AnswerService.getList(question, page, sort)`(5개씩), 상세에 `answerPage`·`answerSort` 파라미터, 최신순/추천순 버튼, 답변 페이지 이동
+- 이유: 답변이 많아지면 한 번에 모두 출력하기 부담. 추천 많은 답변을 먼저 보고 싶은 경우 (스택오버플로우 방식)
+- 결과: 답변 7개 → 1페이지 5개(최신순), 2페이지 2개, 추천순은 추천 1개인 답변(1)이 맨 앞

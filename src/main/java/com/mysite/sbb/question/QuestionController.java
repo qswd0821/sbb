@@ -1,6 +1,7 @@
 package com.mysite.sbb.question;
 
 import com.mysite.sbb.answer.AnswerForm;
+import com.mysite.sbb.answer.AnswerService;
 import com.mysite.sbb.user.SiteUser;
 import com.mysite.sbb.user.UserService;
 import jakarta.validation.Valid;
@@ -27,6 +28,7 @@ import java.security.Principal;
 public class QuestionController {
     private final QuestionService questionService;
     private final UserService userService;
+    private final AnswerService answerService;
 
     // /question/list?page=0 형태, page 파라미터가 없으면 0 (첫 페이지)
     @GetMapping("/list")
@@ -38,10 +40,15 @@ public class QuestionController {
         return "question_list"; // templates/question_list.html
     }
 
+    // answerPage : 답변 페이지(0부터), answerSort : latest(최신순, 기본) / vote(추천순)
     @GetMapping("/detail/{id}")
-    public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm) {
+    public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm,
+                         @RequestParam(value = "answerPage", defaultValue = "0") int answerPage,
+                         @RequestParam(value = "answerSort", defaultValue = "latest") String answerSort) {
         Question question = questionService.getQuestion(id);
         model.addAttribute("question", question);
+        model.addAttribute("answerPaging", answerService.getList(question, answerPage, answerSort));
+        model.addAttribute("answerSort", answerSort);
         return "question_detail";
     }
 

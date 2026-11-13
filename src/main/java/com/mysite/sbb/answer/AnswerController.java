@@ -35,7 +35,10 @@ public class AnswerController {
         Question question = questionService.getQuestion(id);
         SiteUser siteUser = userService.getUser(principal.getName());
         if (bindingResult.hasErrors()) {
-            model.addAttribute("question", question); // 상세 템플릿을 다시 그리려면 질문도 필요
+            // 상세 템플릿을 다시 그리려면 질문과 답변 페이지 정보도 필요
+            model.addAttribute("question", question);
+            model.addAttribute("answerPaging", answerService.getList(question, 0, "latest"));
+            model.addAttribute("answerSort", "latest");
             return "question_detail";
         }
         Answer answer = answerService.create(question, answerForm.getContent(), siteUser);

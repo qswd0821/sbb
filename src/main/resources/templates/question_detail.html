@@ -42,11 +42,18 @@
             </div>
         </div>
     </div>
-    <!-- 답변의 갯수 표시 -->
-    <h5 class="border-bottom my-3 py-2"
-        th:text="|${#lists.size(question.answerList)}개의 답변이 있습니다.|"></h5>
-    <!-- 답변 반복 시작 -->
-    <div class="card my-3" th:each="answer : ${question.answerList}">
+    <!-- 답변의 갯수 표시 + 정렬 선택 (3-14 답변 페이징과 정렬) -->
+    <div class="d-flex justify-content-between align-items-center border-bottom my-3 py-2">
+        <h5 class="mb-0" th:text="|${answerPaging.totalElements}개의 답변이 있습니다.|"></h5>
+        <div class="btn-group btn-group-sm">
+            <a th:href="@{/question/detail/{id}(id=${question.id}, answerSort='latest')}"
+               class="btn btn-outline-secondary" th:classappend="${answerSort != 'vote'} ? 'active'">최신순</a>
+            <a th:href="@{/question/detail/{id}(id=${question.id}, answerSort='vote')}"
+               class="btn btn-outline-secondary" th:classappend="${answerSort == 'vote'} ? 'active'">추천순</a>
+        </div>
+    </div>
+    <!-- 답변 반복 시작 (현재 답변 페이지의 답변만) -->
+    <div class="card my-3" th:each="answer : ${answerPaging}">
         <a th:id="|answer_${answer.id}|"></a> <!-- 앵커: /question/detail/{id}#answer_{답변id} 로 이동하면 여기로 스크롤 -->
         <div class="card-body">
             <div class="card-text" th:utext="${commonUtil.markdown(answer.content)}"></div>
@@ -83,6 +90,22 @@
             </div>
         </div>
     </div>
+    <!-- 답변 페이징 : 정렬 기준(answerSort) 유지 -->
+    <ul class="pagination pagination-sm justify-content-center" th:if="${answerPaging.totalPages > 1}">
+        <li class="page-item" th:classappend="${!answerPaging.hasPrevious} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/question/detail/{id}(id=${question.id}, answerPage=${answerPaging.number-1}, answerSort=${answerSort})}">이전</a>
+        </li>
+        <li th:each="p : ${#numbers.sequence(0, answerPaging.totalPages-1)}" class="page-item"
+            th:classappend="${p == answerPaging.number} ? 'active'">
+            <a class="page-link" th:text="${p + 1}"
+               th:href="@{/question/detail/{id}(id=${question.id}, answerPage=${p}, answerSort=${answerSort})}"></a>
+        </li>
+        <li class="page-item" th:classappend="${!answerPaging.hasNext} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/question/detail/{id}(id=${question.id}, answerPage=${answerPaging.number+1}, answerSort=${answerSort})}">다음</a>
+        </li>
+    </ul>
     <!-- 답변 작성 : 로그인하지 않으면 입력창 비활성화 -->
     <form th:action="@{|/answer/create/${question.id}|}" th:object="${answerForm}" method="post" class="my-3">
         <div th:replace="~{form_errors :: formErrorsFragment}"></div>

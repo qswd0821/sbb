@@ -4,6 +4,10 @@ import com.mysite.sbb.DataNotFoundException;
 import com.mysite.sbb.question.Question;
 import com.mysite.sbb.user.SiteUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +23,17 @@ public class AnswerService {
     @Transactional
     public Answer create(Question question, String content, SiteUser author) {
         return question.addAnswer(content, author);
+    }
+
+    public static final int ANSWER_PAGE_SIZE = 5;
+
+    // sort : "vote"(추천순) 또는 그 외(최신순)
+    public Page<Answer> getList(Question question, int page, String sort) {
+        if ("vote".equals(sort)) {
+            return answerRepository.findByQuestionOrderByVoterCount(question, PageRequest.of(page, ANSWER_PAGE_SIZE));
+        }
+        Pageable pageable = PageRequest.of(page, ANSWER_PAGE_SIZE, Sort.by(Sort.Order.desc("createDate")));
+        return answerRepository.findByQuestion(question, pageable);
     }
 
     public Answer getAnswer(Integer id) {
