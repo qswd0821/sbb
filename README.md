@@ -366,3 +366,10 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `category` 패키지(`Category`, `CategoryRepository`, `CategoryService`), `Question.category`, 질문 폼 카테고리 선택(@NotNull), 목록 `?category=` 필터(검색·페이징과 함께 유지), 내비게이션 바 카테고리 메뉴(공통 모델 `categoryList`), 초기 데이터
 - 이유: 게시판을 성격별로 분리. 기존 질문은 `질문답변` 으로 이동(일괄 update)
 - 결과: 메뉴 `질문답변·강좌·자유게시판`, 카테고리 미선택 → `카테고리는 필수항목입니다.`, 강좌로 등록 → `/question/list?category=2` 에 1건, 질문답변 302건
+
+### 004-04 추가 기능, 비밀번호 변경 (책 3-14)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/004-04)
+- 작업: `PasswordChangeForm`, `GET/POST /user/password`(로그인 필요), 현재 비밀번호 확인(`passwordEncoder.matches`), 새 비밀번호 일치 확인, 변경 후 flash 메시지, navbar `비밀번호 변경` 링크
+- 이유: 로그인한 사용자가 스스로 비밀번호를 바꿀 수 있어야 함
+- 미구현: 비밀번호 **찾기**(임시 비밀번호 메일 발송)는 SMTP 메일 서버 계정이 필요해 이번 범위에서 제외
+- 결과: 현재 비밀번호 틀림/새 비밀번호 불일치 → 해당 필드 오류, 정상 변경 → 302 + `비밀번호가 변경되었습니다.`, 이전 비밀번호 로그인 실패·새 비밀번호 로그인 성공

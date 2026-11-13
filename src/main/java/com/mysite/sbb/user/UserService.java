@@ -19,6 +19,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public boolean isPasswordMatch(SiteUser user, String rawPassword) {
+        return passwordEncoder.matches(rawPassword, user.getPassword()); // 해시끼리 비교 (평문 복원 불가)
+    }
+
+    public void changePassword(SiteUser user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
     public SiteUser getUser(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new DataNotFoundException("siteuser not found"));
