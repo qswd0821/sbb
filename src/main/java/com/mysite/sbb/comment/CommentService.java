@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +25,14 @@ public class CommentService {
         Comment comment = newComment(content, author);
         comment.setAnswer(answer);
         return commentRepository.save(comment);
+    }
+
+    public List<Comment> getRecentByAuthor(SiteUser author) {
+        return commentRepository.findTop10ByAuthorOrderByCreateDateDesc(author);
+    }
+
+    public long countByAuthor(SiteUser author) {
+        return commentRepository.countByAuthor(author);
     }
 
     public Comment getComment(Integer id) {

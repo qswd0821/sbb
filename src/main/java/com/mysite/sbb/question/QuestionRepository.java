@@ -1,6 +1,7 @@
 package com.mysite.sbb.question;
 
 import com.mysite.sbb.category.Category;
+import com.mysite.sbb.user.SiteUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +19,11 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
     Optional<Question> findBySubjectAndContent(String subject, String content);     // WHERE subject = ? AND content = ?
 
     List<Question> findBySubjectLike(String subject);                               // WHERE subject LIKE ?
+
+    // 프로필 : 특정 사용자가 쓴 최근 질문 10개, 전체 개수
+    List<Question> findTop10ByAuthorOrderByCreateDateDesc(SiteUser author);
+
+    long countByAuthor(SiteUser author);
 
     // 카테고리 도입 전에 만들어진 질문(category null)을 기본 카테고리로 일괄 변경
     @Modifying

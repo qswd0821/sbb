@@ -373,3 +373,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 이유: 로그인한 사용자가 스스로 비밀번호를 바꿀 수 있어야 함
 - 미구현: 비밀번호 **찾기**(임시 비밀번호 메일 발송)는 SMTP 메일 서버 계정이 필요해 이번 범위에서 제외
 - 결과: 현재 비밀번호 틀림/새 비밀번호 불일치 → 해당 필드 오류, 정상 변경 → 302 + `비밀번호가 변경되었습니다.`, 이전 비밀번호 로그인 실패·새 비밀번호 로그인 성공
+
+### 004-05 추가 기능, 프로필 화면 (책 3-14)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/004-05)
+- 작업: `ProfileController`(GET /user/profile, 로그인 필요), 질문·답변·댓글 리포지터리에 `findTop10ByAuthorOrderByCreateDateDesc`, `countByAuthor`, `profile.html`(기본 정보, 활동 수, 최근 질문/답변/댓글 링크), navbar 사용자명 → 프로필 링크
+- 이유: 내가 쓴 글을 한곳에서 확인
+- 결과: user1 프로필 `질문 3 · 답변 6 · 댓글 1` 과 최근 목록, 비로그인 → 로그인 페이지

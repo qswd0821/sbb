@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,14 @@ public class AnswerService {
         }
         Pageable pageable = PageRequest.of(page, ANSWER_PAGE_SIZE, Sort.by(Sort.Order.desc("createDate")));
         return answerRepository.findByQuestion(question, pageable);
+    }
+
+    public List<Answer> getRecentByAuthor(SiteUser author) {
+        return answerRepository.findTop10ByAuthorOrderByCreateDateDesc(author);
+    }
+
+    public long countByAuthor(SiteUser author) {
+        return answerRepository.countByAuthor(author);
     }
 
     public Answer getAnswer(Integer id) {

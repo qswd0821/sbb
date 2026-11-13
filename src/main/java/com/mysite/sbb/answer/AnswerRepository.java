@@ -1,13 +1,21 @@
 package com.mysite.sbb.answer;
 
 import com.mysite.sbb.question.Question;
+import com.mysite.sbb.user.SiteUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface AnswerRepository extends JpaRepository<Answer, Integer> {
+    // 프로필 : 특정 사용자가 쓴 최근 답변 10개, 전체 개수
+    List<Answer> findTop10ByAuthorOrderByCreateDateDesc(SiteUser author);
+
+    long countByAuthor(SiteUser author);
+
     // 최신순 등 Pageable 의 Sort 로 정렬 가능한 경우
     Page<Answer> findByQuestion(Question question, Pageable pageable);
 

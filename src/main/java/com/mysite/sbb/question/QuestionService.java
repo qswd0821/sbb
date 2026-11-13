@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,14 @@ public class QuestionService {
     public Question getQuestion(Integer id) {
         return questionRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("question not found"));
+    }
+
+    public List<Question> getRecentByAuthor(SiteUser author) {
+        return questionRepository.findTop10ByAuthorOrderByCreateDateDesc(author);
+    }
+
+    public long countByAuthor(SiteUser author) {
+        return questionRepository.countByAuthor(author);
     }
 
     public long count() {
