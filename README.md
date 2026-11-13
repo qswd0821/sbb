@@ -137,3 +137,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `Question` 에 `@OneToMany List<Answer> answerList` 를 **mappedBy 없이** 추가 (실험)
 - 이유: 책은 mappedBy를 쓰라고만 함 → 빼면 무슨 일이 생기는지 직접 확인 (14163 11강)
 - 결과: `create table question_answer_list (question_id, answer_list_id)` 중간 테이블 생성. 이미 `answer.question_id` 가 있는데도 관계를 중복 저장하는 쓸데없는 테이블
+
+### 002-11 엔티티, @OneToMany에 mappedBy와 cascade REMOVE 적용 (책 2-04, 14163 9·12강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-11)
+- 작업: `@OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE) List<Answer> answerList`
+- 이유: mappedBy로 관계의 주인이 `Answer.question` 임을 알려 중간 테이블 없이 `answer.question_id` 사용. 질문 삭제 시 답변도 삭제
+- 결과: 개발 DB 재생성 후 `question`, `answer` 테이블만 생성 (중간 테이블 없음). `@OneToMany` 는 DB 컬럼을 만들지 않음

@@ -1,5 +1,6 @@
 package com.mysite.sbb;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,7 +29,8 @@ public class Question {
 
     private LocalDateTime createDate;
 
-    // 실험: mappedBy 없이 선언 → JPA가 중간 테이블(question_answer_list)을 만든다
-    @OneToMany
+    // mappedBy = "question" : 이 관계의 주인은 Answer.question (answer.question_id 칼럼을 그대로 사용)
+    // cascade = REMOVE : 질문 삭제 시 답변들도 함께 삭제
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answerList;
 }
