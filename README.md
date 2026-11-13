@@ -59,3 +59,10 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 이유: 2장부터 파일이 늘어나므로 각 파일을 어디에 둘지 기준을 먼저 정리, 특히 컴포넌트 스캔 범위(`com.mysite.sbb` 하위) 확인
 - 책과 차이: `build.gradle` → `build.gradle.kts`(강사 방식), STS → 인텔리제이
 - 결과: 코드 변경 없음, 문서 정리
+
+### 002-02 간단한 웹 프로그램, MainController 추가 (void → 500 확인) (책 2-02)
+- 작업: `GET /sbb` 에 매핑된 `MainController.index()` 추가, 리턴 타입 `void`, 콘솔에 `index` 출력
+- 이유: 404(매핑 없음)와 500(매핑은 있으나 처리 중 오류)의 차이를 직접 확인 (14163 3강 DispatcherServlet 흐름)
+- 결과
+  - `/sbb` → **500** `Circular view path [sbb]` (void라서 URL 이름 `sbb`를 뷰 이름으로 사용 → 같은 URL로 다시 포워드), 콘솔에 `index` 출력 = 메서드는 호출됨
+  - `/not-exist` → **404** (매핑된 메서드 없음)
