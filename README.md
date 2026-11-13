@@ -391,3 +391,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `Question.viewCount`(@ColumnDefault 0, not null), `increaseViewCount`(@Modifying JPQL `viewCount + 1`), 상세 진입 시 증가, 목록 `조회` 칸·상세 `조회 n`
 - 이유: 질문의 관심도 표시. 증가는 DB에서 한 번에 처리해 동시 조회 시 누락 방지
 - 결과: 1번 질문 상세 3회 → `조회 1, 2, 3`, 목록에도 3, 없는 질문은 404 유지
+
+### 004-08 추가 기능, 마크다운 에디터 EasyMDE (책 3-14)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/004-08)
+- 작업: 레이아웃에 EasyMDE 2.18.0 CSS/JS, `global.js` 가 `textarea[data-markdown-editor]` 를 에디터로 변환(`forceSync`), 질문 폼·답변 폼·상세 답변 입력에 적용
+- 책과 차이: 책이 추천한 simpleMDE는 관리가 중단(아이콘 CDN도 끊김) → 후속 포크 **EasyMDE**. cdnjs에 없어 jsdelivr 사용
+- 결과: 질문 등록 화면에 에디터 1개·툴바 버튼 12개, 에디터로 작성한 내용이 저장되어 상세에서 `<h2>`, 목록, 굵게로 렌더링
