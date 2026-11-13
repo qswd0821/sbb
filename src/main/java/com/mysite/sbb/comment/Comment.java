@@ -31,6 +31,11 @@ public class Comment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Answer answer;
 
+    // 부모(질문 또는 답변)의 댓글 목록에서 자신을 뺀다 → orphanRemoval 로 DELETE
+    public boolean removeFromParent() {
+        return question != null ? question.deleteComment(this) : answer.deleteComment(this);
+    }
+
     // 댓글이 속한 질문의 id (답변 댓글이면 답변의 질문) → 처리 후 돌아갈 상세 페이지
     public Integer getQuestionId() {
         return question != null ? question.getId() : answer.getQuestion().getId();

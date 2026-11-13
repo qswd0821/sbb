@@ -447,3 +447,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - `@EnableJpaAuditing(modifyOnCreate = false)` : 생성일시·수정일시 자동 기록, 생성 시 수정일시는 비워 둠
 - 서비스·초기 데이터의 `setCreateDate(now())`, `setModifyDate(now())` 7곳 제거
 - 테스트 t12(생성·수정 시각), t13(추천만으로는 수정일시 불변) 추가
+
+### 005-02 강사 기법, 엔티티 equals/hashCode + orphanRemoval
+- [코드 보기](https://github.com/qswd0821/sbb/tree/005-02)
+- `BaseEntity.equals/hashCode` : 같은 행(id)이면 같은 엔티티 (14168 37·38강), LAZY 프록시·저장 전 엔티티까지 고려
+- 답변·댓글 컬렉션에 `orphanRemoval = true`, 삭제는 리포지터리 대신 부모 컬렉션에서 제거 (`question.deleteAnswer`, `comment.removeFromParent`)
+- 테스트 t14(프록시·저장 전 equals), t15(컬렉션 제거 → DELETE) 추가

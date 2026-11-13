@@ -50,7 +50,8 @@ public class Question extends BaseEntity {
     private Set<SiteUser> voter = new HashSet<>();
 
     // 이 질문에 달린 댓글 (질문 삭제 시 함께 삭제, 3-14 댓글)
-    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
+    // orphanRemoval : 컬렉션에서 빼기만 해도(commentList.remove) DELETE
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OrderBy("createDate asc")
     private List<Comment> commentList = new ArrayList<>();
 
@@ -58,7 +59,8 @@ public class Question extends BaseEntity {
     // PERSIST : question 이 저장(또는 영속 상태)일 때 answerList 에 추가된 새 답변도 함께 저장
     // REMOVE  : 질문 삭제 시 답변들도 함께 삭제
     // new ArrayList<>() : 새로 만든 Question 에서도 answerList.add() 가 NPE 없이 동작하도록
-    @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    // orphanRemoval : answerList 에서 빠진 답변(고아)은 DELETE (강사 14168 Post.comments)
+    @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Answer> answerList = new ArrayList<>();
 
     public Answer addAnswer(String content, SiteUser author) {
@@ -69,5 +71,14 @@ public class Question extends BaseEntity {
         answerList.add(answer);
 
         return answer;
+    }
+
+    // 답변 삭제 : 컬렉션에서 빼면 orphanRemoval 로 DELETE (List.remove 는 equals 로 찾는다 → BaseEntity.equals)
+    public boolean deleteAnswer(Answer answer) {
+        return answerList.remove(answer);
+    }
+
+    public boolean deleteComment(Comment comment) {
+        return commentList.remove(comment);
     }
 }

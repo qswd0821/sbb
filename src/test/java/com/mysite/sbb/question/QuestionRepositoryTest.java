@@ -4,6 +4,8 @@ import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.answer.AnswerRepository;
 import com.mysite.sbb.user.SiteUser;
 import com.mysite.sbb.user.UserRepository;
+import jakarta.persistence.EntityManager;
+import org.hibernate.Hibernate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,6 +31,9 @@ class QuestionRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EntityManager em;
 
     @Test
     @DisplayName("findAll")
@@ -174,5 +181,37 @@ class QuestionRepositoryTest {
         questionRepository.flush();
 
         assertThat(question.getModifyDate()).isNull();
+    }
+
+    @Test
+    @DisplayName("equals/hashCode : 같은 행이면 다른 객체·LAZY 프록시여도 같다, 저장 전 엔티티끼리는 다르다")
+    void t14() {
+        Question loaded = questionRepository.findById(2).get();
+        em.clear(); // 영속성 컨텍스트를 비워 같은 행을 다른 객체로 다시 얻는다
+
+        Question proxy = questionRepository.getReferenceById(2); // 실제 조회 없이 프록시
+        assertThat(Hibernate.isInitialized(proxy)).isFalse();
+        assertThat(proxy).isNotSameAs(loaded);
+        assertThat(proxy).isEqualTo(loaded);
+        assertThat(loaded).isEqualTo(proxy);
+        assertThat(Set.of(loaded)).contains(proxy);
+
+        // 저장 전(id null) 엔티티 두 개가 HashSet 에서 하나로 합쳐지지 않는다
+        Set<Question> set = new HashSet<>();
+        set.add(new Question());
+        set.add(new Question());
+        assertThat(set).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("orphanRemoval : answerList 에서 빼기만 해도 답변이 DELETE 된다")
+    void t15() {
+        Question question = questionRepository.findById(2).get();
+        Answer answer = answerRepository.findById(1).get();
+
+        assertThat(question.deleteAnswer(answer)).isTrue();
+        questionRepository.flush();
+
+        assertThat(answerRepository.findById(1)).isEmpty();
     }
 }

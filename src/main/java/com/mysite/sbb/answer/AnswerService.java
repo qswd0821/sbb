@@ -63,7 +63,9 @@ public class AnswerService {
         answerRepository.save(answer);
     }
 
+    // 리포지터리 delete 대신 부모 컬렉션에서 제거 (orphanRemoval). 트랜잭션이 끝날 때 DELETE 실행
+    @Transactional
     public void delete(Answer answer) {
-        answerRepository.delete(answer);
+        answer.getQuestion().deleteAnswer(answer);
     }
 }

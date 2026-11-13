@@ -40,7 +40,11 @@ public class Answer extends BaseEntity {
     private Set<SiteUser> voter = new HashSet<>();
 
     // 이 답변에 달린 댓글 (답변 삭제 시 함께 삭제, 3-14 댓글)
-    @OneToMany(mappedBy = "answer", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OrderBy("createDate asc")
     private List<Comment> commentList = new ArrayList<>();
+
+    public boolean deleteComment(Comment comment) {
+        return commentList.remove(comment);
+    }
 }

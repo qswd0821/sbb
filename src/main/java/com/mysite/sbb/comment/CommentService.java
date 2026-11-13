@@ -6,6 +6,7 @@ import com.mysite.sbb.question.Question;
 import com.mysite.sbb.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -43,8 +44,9 @@ public class CommentService {
                 .orElseThrow(() -> new DataNotFoundException("comment not found"));
     }
 
+    @Transactional
     public void delete(Comment comment) {
-        commentRepository.delete(comment);
+        comment.removeFromParent();
     }
 
     private Comment newComment(String content, SiteUser author) {
