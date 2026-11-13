@@ -288,3 +288,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: security 의존성(+ thymeleaf-extras-springsecurity6, security-test), `SecurityConfig`(SecurityFilterChain: 모든 요청 permitAll, H2 콘솔 CSRF 예외, X-Frame-Options SAMEORIGIN)
 - 이유: 회원가입·로그인 준비. 처음엔 모두 허용해 기존 기능을 깨지 않고 도입 (14168 46강). `th:action` 폼은 CSRF 토큰이 자동으로 들어감
 - 결과: 목록 200, 폼에 `_csrf` hidden, 토큰 없는 POST 403, 토큰 있는 POST 302, H2 콘솔 200
+
+### 003-07 회원가입, SiteUser 엔티티와 가입 폼·검증 (책 3-06)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/003-07)
+- 작업: `user` 패키지(`SiteUser`, `UserRepository`, `UserService`, `UserCreateForm`, `UserController`), `signup_form.html`, `PasswordEncoder`(BCrypt) 빈, navbar 회원가입 링크
+- 이유: 회원 정보 저장. 비밀번호는 BCrypt 해시로 저장. 비밀번호 불일치·중복 가입은 폼 오류로 표시
+- 결과: 불일치 → 200 `2개의 패스워드가 일치하지 않습니다.`, 정상 → 302 `/`, 중복 → 200 `이미 등록된 사용자ID 또는 이메일입니다.`
