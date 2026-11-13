@@ -234,3 +234,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `thymeleaf-layout-dialect`, `layout.html`(doctype/head/CSS/JS 공통), 목록·상세는 `layout:decorate="~{layout}"` + `layout:fragment="content"`, `layout:title-pattern="$CONTENT_TITLE | SBB"`
 - 이유: 모든 페이지에 표준 HTML 구조를 한 번만 작성. 페이지마다 고유 title (14168 45강)
 - 결과: 목록 `<title>질문 목록 | SBB</title>`, 상세 `<title>질문 상세 | SBB</title>`, 부트스트랩 CSS/JS 공통 적용
+
+### 002-27 질문 등록, 등록 폼과 저장 (책 2-16, 14168 4~7강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-27)
+- 작업: 목록에 `질문 등록하기` 버튼, `GET /question/create`(폼), `POST /question/create`(저장 후 목록으로 302), `QuestionService.create`, `question_form.html`
+- 이유: 폼 조회는 GET, 데이터 생성은 POST (14168 7강, 멱등성). URL이 같아도 HTTP 메서드로 구분 (14168 26강)
+- 결과: GET 200, POST → 302 `/question/list`, 목록에 새 질문 표시
