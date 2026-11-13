@@ -174,3 +174,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `Question.addAnswer()`, cascade에 `PERSIST` 추가, `answerList = new ArrayList<>()`, `Answer.question` 에 `fetch = LAZY`, TestInitData도 addAnswer 사용, 테스트 t10·t11
 - 이유: 책에 없는 강사 개선. 답변을 질문을 통해 객체지향적으로 생성(리포지터리 주입 불필요), 새 엔티티의 NPE 방지, 불필요한 조회를 줄이는 LAZY
 - 결과: 테스트 12건 통과. t10에서 addAnswer 직후 id=null → flush 후 INSERT되어 id 생성 확인
+
+### 002-17 도메인 분류, question·answer 패키지로 분리 (책 2-06, 14163 26강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-17)
+- 작업: `com.mysite.sbb.question`(Question, QuestionRepository, 테스트), `com.mysite.sbb.answer`(Answer, AnswerRepository)
+- 이유: 기능(도메인)별로 파일을 모아 관련 코드를 찾기 쉽게. 모두 `com.mysite.sbb` 하위라 컴포넌트 스캔 범위 안
+- 결과: 테스트 12건 통과
