@@ -3,6 +3,7 @@ package com.mysite.sbb.question;
 import com.mysite.sbb.answer.AnswerForm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,8 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping("/question") // 이 컨트롤러의 모든 URL 앞에 /question 이 붙는다
 @Controller
@@ -19,10 +19,11 @@ import java.util.List;
 public class QuestionController {
     private final QuestionService questionService;
 
+    // /question/list?page=0 형태, page 파라미터가 없으면 0 (첫 페이지)
     @GetMapping("/list")
-    public String list(Model model) {
-        List<Question> questionList = questionService.getList();
-        model.addAttribute("questionList", questionList); // 템플릿에서 ${questionList} 로 사용
+    public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
+        Page<Question> paging = questionService.getList(page);
+        model.addAttribute("paging", paging); // 템플릿에서 ${paging} 로 사용 (내용 + 페이지 정보)
         return "question_list"; // templates/question_list.html
     }
 

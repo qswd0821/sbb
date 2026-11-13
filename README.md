@@ -264,3 +264,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `DevInitData`(@Profile dev, @Order 2)로 질문을 300개까지 생성, `BaseInitData` 는 @Order 1, `QuestionService.count()`
 - 책과 차이: 책은 테스트 메서드로 300개를 넣지만 테스트는 메모리 DB(002-05)라 dev 화면에 안 보임 → dev 초기 데이터로 생성
 - 결과: 목록에 질문 300개 (페이징 전이라 한 화면에 전부 출력)
+
+### 003-03 페이징, Page 조회와 페이지 이동 UI (책 3-02)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/003-03)
+- 작업: `QuestionService.getList(int page)` → `PageRequest.of(page, 10, createDate desc)`, 컨트롤러 `?page=` 파라미터(기본 0), 템플릿 `paging` + 부트스트랩 pagination(이전/다음, 현재 ±5페이지)
+- 이유: 300개를 한 번에 출력하지 않고 10개씩, 최신 글 먼저
+- 결과: 첫 페이지 10건(최신 글부터), `?page=29`(마지막) 10건 + 다음 버튼 disabled
