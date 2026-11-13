@@ -210,3 +210,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: 클래스에 `@RequestMapping("/question")`, 메서드는 `/list`, `/detail/{id}`
 - 이유: 컨트롤러의 공통 URL 접두어를 한 곳에서 관리 (중복 제거, 변경 용이)
 - 결과: `/question/list`, `/question/detail/1` 동일하게 200
+
+### 002-23 답변 기능, 답변 등록과 목록 표시 (책 2-12, 14163 37강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-23)
+- 작업: `AnswerController`(POST /answer/create/{id}), `AnswerService.create`, 상세 페이지에 답변 개수·목록·등록 폼
+- 책과 차이: `answerRepository.save` 대신 `question.addAnswer()` (14163 37강 강사 커스터마이징, OneToMany + PERSIST)
+- 결과: 브라우저 폼으로 한글 답변 등록 → 302 → 상세 페이지에 `2개의 답변이 있습니다.` 와 답변 표시
