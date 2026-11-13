@@ -81,7 +81,7 @@ class QuestionRepositoryTest {
     @DisplayName("수정")
     void t6() {
         Question question = questionRepository.findById(1).get();
-        question.setSubject("수정된 제목");
+        question.modify("수정된 제목", question.getContent(), question.getCategory());
         questionRepository.save(question);
 
         assertThat(questionRepository.findBySubject("수정된 제목")).isPresent();
@@ -104,9 +104,7 @@ class QuestionRepositoryTest {
     void t8() {
         Question question = questionRepository.findById(2).get();
 
-        Answer answer = new Answer();
-        answer.setContent("네 자동으로 생성됩니다.");
-        answer.setQuestion(question);
+        Answer answer = new Answer(question, "네 자동으로 생성됩니다.", null);
         answerRepository.save(answer);
 
         assertThat(answer.getId()).isNotNull();
@@ -153,15 +151,13 @@ class QuestionRepositoryTest {
     @Test
     @DisplayName("JPA Auditing : 저장 시 createDate 자동, modifyDate 는 수정할 때만")
     void t12() {
-        Question question = new Question();
-        question.setSubject("auditing");
-        question.setContent("createDate 를 직접 넣지 않는다");
+        Question question = new Question("auditing", "createDate 를 직접 넣지 않는다", null, null);
         questionRepository.saveAndFlush(question);
 
         assertThat(question.getCreateDate()).isNotNull();
         assertThat(question.getModifyDate()).isNull(); // modifyOnCreate = false
 
-        question.setContent("수정");
+        question.modify("auditing", "수정", null);
         questionRepository.flush(); // 더티체킹 UPDATE → @LastModifiedDate
 
         assertThat(question.getModifyDate()).isNotNull();
@@ -170,14 +166,10 @@ class QuestionRepositoryTest {
     @Test
     @DisplayName("JPA Auditing : 추천(중간 테이블 INSERT)만으로는 modifyDate 가 바뀌지 않는다")
     void t13() {
-        SiteUser user = new SiteUser();
-        user.setUsername("voter");
-        user.setEmail("voter@test.com");
-        user.setPassword("x");
-        userRepository.save(user);
+        SiteUser user = userRepository.save(new SiteUser("voter", "voter@test.com", "x"));
 
         Question question = questionRepository.findById(1).get();
-        question.getVoter().add(user);
+        question.vote(user);
         questionRepository.flush();
 
         assertThat(question.getModifyDate()).isNull();
@@ -198,8 +190,8 @@ class QuestionRepositoryTest {
 
         // 저장 전(id null) 엔티티 두 개가 HashSet 에서 하나로 합쳐지지 않는다
         Set<Question> set = new HashSet<>();
-        set.add(new Question());
-        set.add(new Question());
+        set.add(new Question("a", "a", null, null));
+        set.add(new Question("a", "a", null, null));
         assertThat(set).hasSize(2);
     }
 

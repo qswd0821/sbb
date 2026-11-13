@@ -453,3 +453,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - `BaseEntity.equals/hashCode` : 같은 행(id)이면 같은 엔티티 (14168 37·38강), LAZY 프록시·저장 전 엔티티까지 고려
 - 답변·댓글 컬렉션에 `orphanRemoval = true`, 삭제는 리포지터리 대신 부모 컬렉션에서 제거 (`question.deleteAnswer`, `comment.removeFromParent`)
 - 테스트 t14(프록시·저장 전 equals), t15(컬렉션 제거 → DELETE) 추가
+
+### 005-03 강사 기법, 엔티티 @Setter 제거와 도메인 메서드
+- [코드 보기](https://github.com/qswd0821/sbb/tree/005-03)
+- 엔티티 5개에서 `@Setter` 제거, `@NoArgsConstructor(access = PROTECTED)` + 필수 값을 받는 생성자 (14168 Post)
+- 변경은 도메인 메서드로만: `question.modify/vote/addComment`, `answer.modify/vote/addComment`, `siteUser.changePassword`
+- 서비스의 수정·추천은 `save()` 대신 `@Transactional` + 더티체킹, 댓글 등록도 답변처럼 부모 컬렉션 + PERSIST cascade

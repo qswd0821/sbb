@@ -15,16 +15,15 @@ import java.util.List;
 public class CommentService {
     private final CommentRepository commentRepository;
 
+    // 부모 컬렉션에 추가 → PERSIST cascade 로 저장 (답변 등록 question.addAnswer 와 같은 방식)
+    @Transactional
     public Comment create(Question question, String content, SiteUser author) {
-        Comment comment = newComment(content, author);
-        comment.setQuestion(question);
-        return commentRepository.save(comment);
+        return question.addComment(content, author);
     }
 
+    @Transactional
     public Comment create(Answer answer, String content, SiteUser author) {
-        Comment comment = newComment(content, author);
-        comment.setAnswer(answer);
-        return commentRepository.save(comment);
+        return answer.addComment(content, author);
     }
 
     public List<Comment> getRecentByAuthor(SiteUser author) {
@@ -47,12 +46,5 @@ public class CommentService {
     @Transactional
     public void delete(Comment comment) {
         comment.removeFromParent();
-    }
-
-    private Comment newComment(String content, SiteUser author) {
-        Comment comment = new Comment();
-        comment.setContent(content);
-        comment.setAuthor(author);
-        return comment;
     }
 }

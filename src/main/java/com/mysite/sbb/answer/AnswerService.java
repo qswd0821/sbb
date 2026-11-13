@@ -53,14 +53,14 @@ public class AnswerService {
                 .orElseThrow(() -> new DataNotFoundException("answer not found"));
     }
 
+    @Transactional
     public void modify(Answer answer, String content) {
-        answer.setContent(content);
-        answerRepository.save(answer);
+        answer.modify(content);
     }
 
+    @Transactional
     public void vote(Answer answer, SiteUser siteUser) {
-        answer.getVoter().add(siteUser);
-        answerRepository.save(answer);
+        answer.vote(siteUser);
     }
 
     // 리포지터리 delete 대신 부모 컬렉션에서 제거 (orphanRemoval). 트랜잭션이 끝날 때 DELETE 실행

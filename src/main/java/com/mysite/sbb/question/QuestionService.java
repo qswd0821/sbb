@@ -48,24 +48,18 @@ public class QuestionService {
     }
 
     public Question create(String subject, String content, SiteUser author, Category category) {
-        Question q = new Question();
-        q.setSubject(subject);
-        q.setContent(content);
-        q.setAuthor(author);
-        q.setCategory(category);
-        return questionRepository.save(q);
+        return questionRepository.save(new Question(subject, content, author, category));
     }
 
+    // save 없이 더티체킹 : 트랜잭션이 끝날 때 바뀐 필드만 UPDATE
+    @Transactional
     public void modify(Question question, String subject, String content, Category category) {
-        question.setSubject(subject);
-        question.setContent(content);
-        question.setCategory(category);
-        questionRepository.save(question);
+        question.modify(subject, content, category);
     }
 
+    @Transactional
     public void vote(Question question, SiteUser siteUser) {
-        question.getVoter().add(siteUser); // Set 이라 같은 사용자가 여러 번 추천해도 1번만 반영
-        questionRepository.save(question);
+        question.vote(siteUser);
     }
 
     public void delete(Question question) {

@@ -12,11 +12,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public SiteUser create(String username, String email, String password) {
-        SiteUser user = new SiteUser();
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password)); // 평문 저장 금지
-        return userRepository.save(user);
+        return userRepository.save(new SiteUser(username, email, passwordEncoder.encode(password))); // 평문 저장 금지
     }
 
     public boolean isPasswordMatch(SiteUser user, String rawPassword) {
@@ -24,7 +20,7 @@ public class UserService {
     }
 
     public void changePassword(SiteUser user, String newPassword) {
-        user.setPassword(passwordEncoder.encode(newPassword));
+        user.changePassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
 

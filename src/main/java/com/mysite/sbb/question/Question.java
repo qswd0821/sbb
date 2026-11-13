@@ -15,7 +15,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import org.hibernate.annotations.ColumnDefault;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // JPA 가 조회 결과로 객체를 만들 때만 사용
 @Entity
 public class Question extends BaseEntity {
     @Column(length = 200)
@@ -51,7 +52,7 @@ public class Question extends BaseEntity {
 
     // 이 질문에 달린 댓글 (질문 삭제 시 함께 삭제, 3-14 댓글)
     // orphanRemoval : 컬렉션에서 빼기만 해도(commentList.remove) DELETE
-    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @OrderBy("createDate asc")
     private List<Comment> commentList = new ArrayList<>();
 
@@ -63,11 +64,27 @@ public class Question extends BaseEntity {
     @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Answer> answerList = new ArrayList<>();
 
+    public Question(String subject, String content, SiteUser author, Category category) {
+        this.subject = subject;
+        this.content = content;
+        this.author = author;
+        this.category = category;
+    }
+
+    // 수정 : 바꿀 수 있는 필드만 한 메서드로 (수정일시는 @LastModifiedDate 가 자동 기록)
+    public void modify(String subject, String content, Category category) {
+        this.subject = subject;
+        this.content = content;
+        this.category = category;
+    }
+
+    // 추천 : Set 이라 같은 사용자가 여러 번 추천해도 1번만 반영 (새로 추가됐으면 true)
+    public boolean vote(SiteUser siteUser) {
+        return voter.add(siteUser);
+    }
+
     public Answer addAnswer(String content, SiteUser author) {
-        Answer answer = new Answer();
-        answer.setContent(content);
-        answer.setQuestion(this);
-        answer.setAuthor(author);
+        Answer answer = new Answer(this, content, author);
         answerList.add(answer);
 
         return answer;
@@ -76,6 +93,14 @@ public class Question extends BaseEntity {
     // 답변 삭제 : 컬렉션에서 빼면 orphanRemoval 로 DELETE (List.remove 는 equals 로 찾는다 → BaseEntity.equals)
     public boolean deleteAnswer(Answer answer) {
         return answerList.remove(answer);
+    }
+
+    // 댓글 등록 : commentList 의 PERSIST cascade 로 저장
+    public Comment addComment(String content, SiteUser author) {
+        Comment comment = new Comment(this, content, author);
+        commentList.add(comment);
+
+        return comment;
     }
 
     public boolean deleteComment(Comment comment) {

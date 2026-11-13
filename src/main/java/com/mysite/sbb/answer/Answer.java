@@ -13,7 +13,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // JPA 가 조회 결과로 객체를 만들 때만 사용
 @Entity
 public class Answer extends BaseEntity {
     @Column(columnDefinition = "TEXT")
@@ -40,9 +41,31 @@ public class Answer extends BaseEntity {
     private Set<SiteUser> voter = new HashSet<>();
 
     // 이 답변에 달린 댓글 (답변 삭제 시 함께 삭제, 3-14 댓글)
-    @OneToMany(mappedBy = "answer", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "answer", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @OrderBy("createDate asc")
     private List<Comment> commentList = new ArrayList<>();
+
+    // 생성은 Question.addAnswer() 를 통해서 (다른 패키지라 public)
+    public Answer(Question question, String content, SiteUser author) {
+        this.question = question;
+        this.content = content;
+        this.author = author;
+    }
+
+    public void modify(String content) {
+        this.content = content;
+    }
+
+    public boolean vote(SiteUser siteUser) {
+        return voter.add(siteUser);
+    }
+
+    public Comment addComment(String content, SiteUser author) {
+        Comment comment = new Comment(this, content, author);
+        commentList.add(comment);
+
+        return comment;
+    }
 
     public boolean deleteComment(Comment comment) {
         return commentList.remove(comment);
