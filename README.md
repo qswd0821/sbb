@@ -198,3 +198,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `QuestionService.getList()`, 컨트롤러는 리포지터리 대신 서비스 사용
 - 이유: 컨트롤러는 요청/응답, 서비스는 비즈니스 로직, 리포지터리는 DB 접근으로 역할 분리. 여러 컨트롤러가 같은 로직 재사용
 - 결과: `/question/list` 동일하게 200
+
+### 002-21 상세 페이지, 질문 상세와 없는 질문 404 처리 (책 2-10, 14163 35강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-21)
+- 작업: `GET /question/detail/{id}`, `question_detail.html`, 목록 제목에 상세 링크(`@{|/question/detail/${question.id}|}`), `DataNotFoundException`(@ResponseStatus 404)
+- 이유: 없는 id 요청 시 500(`No value present`) 대신 404와 `question not found` 로 원인을 분명히 (14163 35강 커스텀 예외)
+- 결과: `/question/detail/2` → 200, `/question/detail/999` → 404 `question not found`
