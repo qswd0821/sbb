@@ -25,6 +25,11 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
 
     long countByAuthor(SiteUser author);
 
+    // 조회 수 +1 : 읽고-더하고-저장하는 대신 DB 에서 한 번에 증가 → 동시에 여러 명이 봐도 누락되지 않음
+    @Modifying
+    @Query("update Question q set q.viewCount = q.viewCount + 1 where q.id = :id")
+    int increaseViewCount(@Param("id") Integer id);
+
     // 카테고리 도입 전에 만들어진 질문(category null)을 기본 카테고리로 일괄 변경
     @Modifying
     @Query("update Question q set q.category = :category where q.category is null")

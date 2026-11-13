@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
+import org.hibernate.annotations.ColumnDefault;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,6 +42,11 @@ public class Question {
     private LocalDateTime createDate;
 
     private LocalDateTime modifyDate; // 수정일시 (수정한 적이 없으면 null)
+
+    // 조회 수 (3-14). 기존 행에도 0 이 채워지도록 DB 기본값 지정
+    @ColumnDefault("0")
+    @Column(nullable = false)
+    private int viewCount;
 
     // 게시판 분류 (3-14 카테고리), 기존 데이터는 null 허용
     @ManyToOne(fetch = FetchType.LAZY)

@@ -52,6 +52,9 @@ public class QuestionController {
     public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm,
                          @RequestParam(value = "answerPage", defaultValue = "0") int answerPage,
                          @RequestParam(value = "answerSort", defaultValue = "latest") String answerSort) {
+        // 조회 수 +1 (3-14) 을 먼저 실행 : 일괄 update 는 영속성 컨텍스트를 거치지 않으므로
+        // 엔티티를 먼저 읽어 두면 화면에는 증가 전 값이 보인다. 없는 id 면 0건 update 후 아래에서 404
+        questionService.increaseViewCount(id);
         Question question = questionService.getQuestion(id);
         model.addAttribute("question", question);
         model.addAttribute("answerPaging", answerService.getList(question, answerPage, answerSort));

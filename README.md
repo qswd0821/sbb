@@ -385,3 +385,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `RecentController`(GET /recent), 답변·댓글 `findTop10ByOrderByCreateDateDesc`, `recent.html`(최근 답변: 내용·질문 제목·작성자·시각, 최근 댓글), navbar `최근 활동` 메뉴
 - 이유: 질문 목록만으로는 오래된 질문에 새로 달린 답변·댓글을 알 수 없음
 - 결과: `/recent` 200, 최근 답변 `paging answer 5 / 질문: 스프링부트 모델 질문입니다. / user1` 순서로 표시
+
+### 004-07 추가 기능, 질문 조회 수 (책 3-14)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/004-07)
+- 작업: `Question.viewCount`(@ColumnDefault 0, not null), `increaseViewCount`(@Modifying JPQL `viewCount + 1`), 상세 진입 시 증가, 목록 `조회` 칸·상세 `조회 n`
+- 이유: 질문의 관심도 표시. 증가는 DB에서 한 번에 처리해 동시 조회 시 누락 방지
+- 결과: 1번 질문 상세 3회 → `조회 1, 2, 3`, 목록에도 3, 없는 질문은 404 유지

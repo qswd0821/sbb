@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +29,11 @@ public class QuestionService {
     public Question getQuestion(Integer id) {
         return questionRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("question not found"));
+    }
+
+    @Transactional // @Modifying 쿼리는 트랜잭션 안에서 실행해야 한다
+    public void increaseViewCount(Integer id) {
+        questionRepository.increaseViewCount(id);
     }
 
     public List<Question> getRecentByAuthor(SiteUser author) {
