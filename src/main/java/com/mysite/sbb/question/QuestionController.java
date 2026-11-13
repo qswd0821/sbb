@@ -30,9 +30,11 @@ public class QuestionController {
 
     // /question/list?page=0 형태, page 파라미터가 없으면 0 (첫 페이지)
     @GetMapping("/list")
-    public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
-        Page<Question> paging = questionService.getList(page);
+    public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
+                       @RequestParam(value = "kw", defaultValue = "") String kw) {
+        Page<Question> paging = questionService.getList(page, kw);
         model.addAttribute("paging", paging); // 템플릿에서 ${paging} 로 사용 (내용 + 페이지 정보)
+        model.addAttribute("kw", kw);         // 검색창과 페이지 링크에 검색어 유지
         return "question_list"; // templates/question_list.html
     }
 

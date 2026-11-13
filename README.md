@@ -342,3 +342,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `org.commonmark:commonmark:0.24.0`, `CommonUtil.markdown()`, `GlobalModelAttributes`(@ControllerAdvice로 모든 템플릿에 `commonUtil` 제공), 상세 내용 `th:utext="${commonUtil.markdown(...)}"`
 - 책과 차이: ① 입력된 HTML은 escape, `javascript:` 링크 제거(`escapeHtml`, `sanitizeUrls`) → `th:utext` XSS 방지 ② Thymeleaf 3.1은 `th:utext` 에서 `@빈` 참조를 막으므로(500 발생) 모델 변수로 전달 (14168 19강 공통 모델 변수)
 - 결과: `# Title`, `**bold**`, 목록이 HTML로, `<script>` 는 `&lt;script&gt;` 로 표시
+
+### 003-16 검색, 제목·내용·글쓴이·답변으로 검색 (책 3-13)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/003-16)
+- 작업: `QuestionRepository.findAllByKeyword`(@Query JPQL, left outer join + distinct + Pageable), `getList(page, kw)`, 컨트롤러 `kw` 파라미터, 목록 상단 검색창(GET 폼), 페이지 링크에 `kw` 유지
+- 책과 차이: 책은 숨은 searchForm + 자바스크립트로 page/kw를 제출. 여기서는 **GET 검색 폼 + `@{/question/list(page=..., kw=...)}` 링크**로 JS 없이 처리 (검색 결과 URL 공유·새로고침 가능)
+- 결과: `kw=markdown` 1건, `kw=user1` 3건(글쓴이), `kw=anchor` → 답변 내용으로 2번 질문, 없는 검색어 0건

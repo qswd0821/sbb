@@ -17,9 +17,10 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
 
     // page: 0부터 시작하는 페이지 번호, 한 페이지 10개, 최신 글이 먼저
-    public Page<Question> getList(int page) {
+    // kw : 검색어 (빈 문자열이면 like '%%' 로 전체)
+    public Page<Question> getList(int page, String kw) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Order.desc("createDate")));
-        return questionRepository.findAll(pageable);
+        return questionRepository.findAllByKeyword(kw, pageable);
     }
 
     public Question getQuestion(Integer id) {
