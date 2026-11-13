@@ -1,13 +1,14 @@
 package com.mysite.sbb.question;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -31,14 +32,20 @@ public class QuestionController {
         return "question_detail";
     }
 
+    // 빈 QuestionForm 을 모델에 넣어야 템플릿의 th:object="${questionForm}" 이 동작한다
     @GetMapping("/create")
-    public String questionCreate() {
+    public String questionCreate(QuestionForm questionForm) {
         return "question_form";
     }
 
+    // @Valid : QuestionForm 의 @NotEmpty, @Size 검사
+    // BindingResult : 검사 실패 시 예외를 던지지 않고 결과를 담아 둔다 → 폼을 다시 보여줌 (14168 13강)
     @PostMapping("/create")
-    public String questionCreate(@RequestParam("subject") String subject, @RequestParam("content") String content) {
-        questionService.create(subject, content);
+    public String questionCreate(@Valid QuestionForm questionForm, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "question_form"; // 입력값은 questionForm 에 남아 있어 그대로 다시 표시된다
+        }
+        questionService.create(questionForm.getSubject(), questionForm.getContent());
         return "redirect:/question/list";
     }
 }

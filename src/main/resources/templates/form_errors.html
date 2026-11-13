@@ -1,0 +1,13 @@
+<!--
+  폼 검증 오류 출력 프래그먼트 (14168 23~25강)
+  - #fields : th:object 로 지정한 폼 객체의 검증 결과
+  - data-error-field-name : global.js 가 첫 번째 오류 필드에 focus 하는 데 사용
+-->
+<div th:fragment="formErrorsFragment" class="alert alert-danger" role="alert"
+     th:if="${#fields.hasAnyErrors()}">
+    <ul class="mb-0">
+        <li th:each="err : ${#fields.detailedErrors()}"
+            th:data-error-field-name="${err.fieldName}"
+            th:text="${err.message}"></li>
+    </ul>
+</div>

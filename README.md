@@ -240,3 +240,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: 목록에 `질문 등록하기` 버튼, `GET /question/create`(폼), `POST /question/create`(저장 후 목록으로 302), `QuestionService.create`, `question_form.html`
 - 이유: 폼 조회는 GET, 데이터 생성은 POST (14168 7강, 멱등성). URL이 같아도 HTTP 메서드로 구분 (14168 26강)
 - 결과: GET 200, POST → 302 `/question/list`, 목록에 새 질문 표시
+
+### 002-28 질문 등록, 폼 검증과 오류 표시·포커스 (책 2-16, 14168 9~25강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-28)
+- 작업: validation 의존성, `QuestionForm`(@NotEmpty, @Size), `@Valid` + `BindingResult`, `th:object`/`th:field`, `form_errors.html` 프래그먼트(`#fields`, `data-error-field-name`), `global.js`(가장 위 오류 필드 focus)
+- 이유: 빈 제목/내용 저장 방지. 실패 시 예외 대신 폼을 다시 보여주고 입력값 유지 (14168 9·10·13강). 오류 필드로 커서 이동 (14168 15·25강)
+- 결과: 빈 폼 제출 → 200, 오류 2개 표시, 내용 입력값 유지, focus=subject

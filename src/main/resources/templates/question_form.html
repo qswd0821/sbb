@@ -2,14 +2,16 @@
 <head><title>질문 등록</title></head>
 <div layout:fragment="content" class="container">
     <h5 class="my-3 border-bottom pb-2">질문등록</h5>
-    <form th:action="@{/question/create}" method="post">
+    <!-- th:object : 폼 객체 지정, th:field : name/id/value 를 한 번에 생성하고 오류 후에도 입력값 유지 (14168 22강) -->
+    <form th:action="@{/question/create}" th:object="${questionForm}" method="post">
+        <div th:replace="~{form_errors :: formErrorsFragment}"></div>
         <div class="mb-3">
             <label for="subject" class="form-label">제목</label>
-            <input type="text" name="subject" id="subject" class="form-control">
+            <input type="text" th:field="*{subject}" class="form-control">
         </div>
         <div class="mb-3">
             <label for="content" class="form-label">내용</label>
-            <textarea name="content" id="content" class="form-control" rows="10"></textarea>
+            <textarea th:field="*{content}" class="form-control" rows="10"></textarea>
         </div>
         <input type="submit" value="저장하기" class="btn btn-primary my-2">
     </form>
