@@ -216,3 +216,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: `AnswerController`(POST /answer/create/{id}), `AnswerService.create`, 상세 페이지에 답변 개수·목록·등록 폼
 - 책과 차이: `answerRepository.save` 대신 `question.addAnswer()` (14163 37강 강사 커스터마이징, OneToMany + PERSIST)
 - 결과: 브라우저 폼으로 한글 답변 등록 → 302 → 상세 페이지에 `2개의 답변이 있습니다.` 와 답변 표시
+
+### 002-24 웹 디자인, static 스타일시트 적용 (책 2-13, 14163 38강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-24)
+- 작업: `static/style.css`(textarea 100%, 버튼 여백), 상세 템플릿에 `<link th:href="@{/style.css}">`
+- 이유: CSS·JS·이미지 같은 정적 파일은 `resources/static` 에 두면 URL 루트(`/style.css`)로 그대로 제공
+- 결과: `/style.css` → 200 `text/css`
