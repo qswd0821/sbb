@@ -23,7 +23,6 @@ public class TestInitData {
     @Lazy
     private TestInitData self; // @Transactional 이 프록시를 거쳐 적용되도록 자기 자신을 프록시로 주입
     private final QuestionRepository questionRepository;
-    private final AnswerRepository answerRepository;
 
     @Bean
     public ApplicationRunner testInitDataApplicationRunner() {
@@ -44,12 +43,7 @@ public class TestInitData {
         q2.setSubject("스프링부트 모델 질문입니다.");
         q2.setContent("id는 자동으로 생성되나요?");
         q2.setCreateDate(LocalDateTime.now());
+        q2.addAnswer("네 자동으로 생성됩니다."); // CascadeType.PERSIST 로 질문 저장 시 답변도 저장
         questionRepository.save(q2);
-
-        Answer a1 = new Answer();
-        a1.setContent("네 자동으로 생성됩니다.");
-        a1.setQuestion(q2);
-        a1.setCreateDate(LocalDateTime.now());
-        answerRepository.save(a1);
     }
 }

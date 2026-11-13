@@ -107,4 +107,34 @@ class QuestionRepositoryTest {
 
         assertThat(answer.getQuestion().getId()).isEqualTo(2);
     }
+
+    @Test
+    @DisplayName("답변 생성 by oneToMany")
+    void t10() {
+        Question question = questionRepository.findById(2).get();
+        int beforeCount = question.getAnswerList().size();
+
+        Answer newAnswer = question.addAnswer("네 자동으로 생성됩니다.");
+
+        // answerRepository.save 를 호출하지 않았다.
+        // 아직 INSERT 전이라 id 는 null, flush(또는 커밋) 시점에 PERSIST cascade + 더티체킹으로 INSERT 된다.
+        assertThat(newAnswer.getId()).isNull();
+        questionRepository.flush();
+        assertThat(newAnswer.getId()).isNotNull();
+
+        assertThat(question.getAnswerList()).hasSize(beforeCount + 1);
+    }
+
+    @Test
+    @DisplayName("답변 조회 by oneToMany")
+    void t11() {
+        // LAZY 라서 getAnswerList() 시점에 SELECT 가 실행된다.
+        // 클래스의 @Transactional 덕분에 DB 연결(영속성 컨텍스트)이 유지되어 LazyInitializationException 이 나지 않는다.
+        Question question = questionRepository.findById(2).get();
+
+        List<Answer> answerList = question.getAnswerList();
+
+        assertThat(answerList).hasSize(1);
+        assertThat(answerList.get(0).getContent()).isEqualTo("네 자동으로 생성됩니다.");
+    }
 }

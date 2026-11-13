@@ -168,3 +168,9 @@ JAVA_HOME=/c/Users/Sub/.jdks/ms-25.0.4.1 ./gradlew test      # 테스트
 - 작업: 답변 생성(t8, `answerRepository.save`), 답변 조회(t9, `answer.getQuestion()`)
 - 이유: 책 방식(관계지향적: 자식 리포지터리로 직접 저장)을 먼저 확인 → 다음 커밋에서 OneToMany 방식과 비교
 - 결과: 테스트 10건 통과
+
+### 002-16 리포지터리, OneToMany 답변 생성과 LAZY·컬렉션 초기화 (14163 21~25강)
+- [코드 보기](https://github.com/qswd0821/sbb/tree/002-16)
+- 작업: `Question.addAnswer()`, cascade에 `PERSIST` 추가, `answerList = new ArrayList<>()`, `Answer.question` 에 `fetch = LAZY`, TestInitData도 addAnswer 사용, 테스트 t10·t11
+- 이유: 책에 없는 강사 개선. 답변을 질문을 통해 객체지향적으로 생성(리포지터리 주입 불필요), 새 엔티티의 NPE 방지, 불필요한 조회를 줄이는 LAZY
+- 결과: 테스트 12건 통과. t10에서 addAnswer 직후 id=null → flush 후 INSERT되어 id 생성 확인
